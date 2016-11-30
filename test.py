@@ -8,36 +8,74 @@ from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import QCoreApplication
 from util import *
 
-class Example(QWidget):
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.setGeometry(300, 100, 300, 400)
+        self.main_widget = MainWidget()
+        self.setCentralWidget(self.main_widget)
+        self.show()
+
+class MainWidget(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.username = 'hello@gmail.com'
         self.initUI()
 
     def initUI(self):
-        self.setGeometry(300, 100, 500, 300)
-        self.setWindowTitle('hallo')
+        # self.setGeometry(300, 100, 600, 600)
+        # self.setWindowTitle('hallo')
 
         # init tooltip
         QToolTip.setFont(QFont('SansSerif', 10))
         self.setToolTip('this is <b>Qwidget</b> widget')
-        btn = QPushButton('Button', self)
-        btn.setToolTip('This is a <b>QPushButton</b> widget')
-        btn.resize(btn.sizeHint())
-        btn.move(50, 50)
+
+        # this hbox is for "New group" button and "Get groups" button
+        self.hbox1 = QHBoxLayout()
+        self.new_group_btn = QPushButton('New Group')
+        self.get_groups_btn = QPushButton('Get My Groups')
+        self.hbox1.addWidget(self.new_group_btn)
+        self.hbox1.addWidget(self.get_groups_btn)
+
+        # this hbox is for "Enter group"
+        self.hbox2 = QHBoxLayout()
+        self.group_id = QLineEdit()
+        self.enter_group_btn = QPushButton('Enter Chatting Group')
+        self.enter_group_btn.clicked.connect(self.enterGroup)
+        self.hbox2.addWidget(self.group_id)
+        self.hbox2.addWidget(self.enter_group_btn)
+        self.enter_group_shortcut = QShortcut(QtGui.QKeySequence('Return'), self)
+        self.enter_group_shortcut.activated.connect(self.enterGroup)
+
+        self.group_list = QListWidget()
+        l = ['G01', 'G02', 'G03']
+        self.group_list.addItems(l)
+        self.group_list.currentItemChanged.connect(self.group_list_item_changed)
 
         # init close bottuon
-        # close_btn = QPushButton('Close', self)
-        # close_btn.move(200, 50)
-        # close_btn.resize(close_btn.sizeHint())
-        # close_btn.setToolTip('Close')
-        # close_btn.clicked.connect(QCoreApplication.instance().quit)
+        self.close_btn = QPushButton('Close')
+        self.close_btn.move(200, 50)
+        self.close_btn.resize(self.close_btn.sizeHint())
+        self.close_btn.setToolTip('Close')
+        self.close_btn.clicked.connect(QCoreApplication.instance().quit)
+
+        self.vbox = QVBoxLayout()
+        self.vbox.addLayout(self.hbox1, 1)
+        self.vbox.addWidget(self.group_list, 1)
+        self.vbox.addLayout(self.hbox2, 1)
+        self.vbox.addWidget(self.close_btn)
 
         # status bar on the bottom
         # self.statusBar().showMessage('Ready')
+        # self.unsetLayoutDirection()
+        self.setLayout(self.vbox)
 
-        self.initMenuBar()
+        # self.initMenuBar()
 
         self.show()
+
+    def group_list_item_changed(self, current, previous):
+        self.group_id.setText(current.text())
 
     def initMenuBar(self):
         # init exit action
@@ -51,15 +89,24 @@ class Example(QWidget):
         file_menu = menu_bar.addMenu('&File')
         file_menu.addAction(exitAction)
 
+    def enterGroup(self):
+        self.chat = Chat_Box(username=self.username, group_id=self.group_id.text())
+        self.group_id.setText('')
+
+        self.chat.show_msg('mzy', '你好哇..................................................')
+        for i in range(5):
+            self.chat.show_msg('ck', '你好哇， 傻逼')
+
 
 class Chat_Box(QWidget):
-    def __init__(self, username='Me'):
+    def __init__(self, username='Me', group_id=None):
         super().__init__()
         self.username = username
-        self.setGeometry(300, 100, 600, 400)
+        self.group_id = group_id
+        self.setGeometry(620, 100, 700, 400)
         self.setWindowTitle('hallo')
         self.user_label = QLabel('username:test@mail.com')
-        self.room_id = QLabel('Room ID: 1234')
+        self.room_id = QLabel('Room ID: %s' % self.group_id)
 
         # init chat content area
         bar = QWidget()
@@ -83,17 +130,25 @@ class Chat_Box(QWidget):
         hinput.addWidget(self.input_box, 10)
         hinput.addWidget(self.send_btn, 2)
 
-        hbar = QHBoxLayout()
-        hbar.addWidget(self.user_label, 1)
-        hbar.addWidget(self.room_id, 1, Qt.Qt.AlignRight)
+        self.hbar = QHBoxLayout()
+        self.hbar.addWidget(self.user_label, 1)
+        self.hbar.addWidget(self.room_id, 1, Qt.Qt.AlignRight)
         # bar.setLayout(hbox)
-        vbox = QVBoxLayout()
-        vbox.addLayout(hbar)
-        vbox.addWidget(bar, 0, Qt.Qt.AlignTop)
-        vbox.addWidget(self.text_box, 80)
-        vbox.addLayout(hinput, 20)
+        self.vbox = QVBoxLayout()
+        self.vbox.addLayout(self.hbar)
+        self.vbox.addWidget(bar, 0, Qt.Qt.AlignTop)
+        self.vbox.addWidget(self.text_box, 80)
+        self.vbox.addLayout(hinput, 20)
 
-        self.setLayout(vbox)
+        # self.friends_vbox = QVBoxLayout()
+        self.friends_list = QListWidget()
+        self.friends_list.addItems(['mzy@gmail.com', 'sb@gmail.com', 'wdy@fudan.edu.cn'])
+
+        self.all_layout_box = QHBoxLayout()
+        self.all_layout_box.addLayout(self.vbox, 3)
+        self.all_layout_box.addWidget(self.friends_list, 1)
+
+        self.setLayout(self.all_layout_box)
 
         self.show()
 
@@ -108,8 +163,5 @@ class Chat_Box(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    chat = Chat_Box()
-    chat.show_msg('mzy', '你好哇..................................................')
-    for i in range(5):
-        chat.show_msg('ck', '你好哇， 傻逼')
+    main_window = MainWindow()
     sys.exit(app.exec_())

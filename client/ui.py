@@ -3,7 +3,7 @@ __author__ = 'kanchan'
 import sys
 
 from PyQt5 import QtGui, Qt
-from PyQt5.QtCore import QCoreApplication
+from PyQt5.QtCore import QCoreApplication, QTimer
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
 
@@ -99,6 +99,11 @@ class MainWidget(QWidget):
         for i in range(5):
             self.chat.show_msg('ck', '你好哇， 傻逼')
 
+    def refresh_friend_list(self):
+        # timer = QTimer()
+        # timer.timeout.
+        pass
+
 
 class Chat_Box(QWidget):
     def __init__(self, username='Me', group_id=None):
@@ -107,7 +112,7 @@ class Chat_Box(QWidget):
         self.group_id = group_id
         self.setGeometry(620, 100, 700, 400)
         self.setWindowTitle('hallo')
-        self.user_label = QLabel('username:test@mail.com')
+        self.user_label = QLabel('username:%s' % self.username)
         self.room_id = QLabel('Room ID: %s' % self.group_id)
 
         # init chat content area
@@ -125,6 +130,8 @@ class Chat_Box(QWidget):
         self.send_btn.clicked.connect(self.send_msg)
 
         self.send_shortcut = QShortcut(QtGui.QKeySequence('Ctrl+Return'), self)
+        # self.send_shortcut = QShortcut(self)
+        # self.send_shortcut.setKey(QtGui.QKeySequence('Ctrl+Return'))
         self.send_shortcut.activated.connect(self.send_msg)
         # sendAction = QAction('&Send', self.send_btn)
         # sendAction.setShortcut('Cmd+Enter')
@@ -166,4 +173,5 @@ class Chat_Box(QWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     main_window = MainWindow()
+    # chat = Chat_Box()
     sys.exit(app.exec_())

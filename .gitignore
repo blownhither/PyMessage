@@ -1,3 +1,2 @@
-*.xml
 .idea/*
-.idea/workspace.xml
+client/__pycache__

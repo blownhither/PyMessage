@@ -1,12 +1,14 @@
 #-*-coding:utf-8-*- 
 __author__ = 'kanchan'
 import sys
-from PyQt5 import QtGui, Qt, QtCore
-from PyQt5.QtWidgets import *
-# from PyQt5.QtWidgets import QApplication, QWidget, QToolTip, QPushButton, QMainWindow, QAction, qApp
-from PyQt5.QtGui import QFont, QIcon
+
+from PyQt5 import QtGui, Qt
 from PyQt5.QtCore import QCoreApplication
-from util import *
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import *
+
+from client.util import *
+
 
 class MainWindow(QMainWindow):
     def __init__(self):

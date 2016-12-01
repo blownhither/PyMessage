@@ -1,9 +1,14 @@
+#!/usr/bin/env python
+
 import socket
+
 import config
+import util
+
 
 def read_msg(server):
     print("read")
-    msg_len = server.recv(1)
+    msg_len = server.recv(config.HEADER_LEN)
     print(msg_len)
     try:
         msg_len = int(msg_len)

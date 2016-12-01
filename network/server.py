@@ -1,5 +1,6 @@
 import eventlet
 import socket
+
 import config
 
 
@@ -11,10 +12,13 @@ def prepare_msg(msg):
 
 
 def handle(conn):
-    while True:
-        c = conn.recv(1)
-        print("handle")
-        conn.sendall(prepare_msg(c))
+    try:
+        while True:
+            c = conn.recv(1)
+            print("handle")
+            conn.sendall(prepare_msg(c))
+    except Exception:
+        pass
 
 pool = eventlet.GreenPool(10000)
 

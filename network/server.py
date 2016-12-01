@@ -4,7 +4,7 @@ from PIL import Image
 
 import network.config as config
 from network.PMDatagram import PMDatagram as Pmd
-
+from network.Group import Group
 
 
 def handle(conn):
@@ -25,6 +25,7 @@ def serialize_img(img_path):
         img.resize(w * ratio, h * ratio)
     return img.tobytes()
 
+g = Group(8848)
 
 def accept_any(server):
     while True:
@@ -39,7 +40,8 @@ def accept_any(server):
 
             # handle(conn)
         print("Accepted")
-        eventlet.spawn_n(handle, conn)
+        # eventlet.spawn_n(handle, conn)
+        eventlet.spawn_n(g.add_conn, conn)
         print("Spawned")
 
 

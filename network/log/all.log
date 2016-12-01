@@ -1,60 +1,19 @@
-Thu, 01 Dec 2016 20:58:24 util.py[line:31] ERROR 
-
-read_conn_tuple ( (<socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>, 4), {} )
-[Errno 54] Connection reset by peer
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 27, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/connect.py", line 16, in read_conn_tuple
-    byte_msg, addr = conn.recvfrom(length)
-ConnectionResetError: [Errno 54] Connection reset by peer
-Thu, 01 Dec 2016 20:58:24 util.py[line:31] ERROR 
-
-read_conn ( (<socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>, 4), {} )
-'NoneType' object is not iterable
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 27, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/connect.py", line 26, in read_conn
-    byte_msg, addr = read_conn_tuple(conn, length)
-TypeError: 'NoneType' object is not iterable
-Thu, 01 Dec 2016 20:58:24 util.py[line:31] ERROR 
-
-parse_len ( (None,), {} )
-'NoneType' object is not subscriptable
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 27, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 17, in parse_len
-    msg_len = int.from_bytes(byte_msg[: config.HEADER_LEN], config.ENDIAN)
-TypeError: 'NoneType' object is not subscriptable
-Thu, 01 Dec 2016 20:58:24 util.py[line:31] ERROR 
-
-read_conn_tuple ( (<socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>, None), {} )
-'NoneType' object cannot be interpreted as an integer
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 27, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/connect.py", line 16, in read_conn_tuple
-    byte_msg, addr = conn.recvfrom(length)
-TypeError: 'NoneType' object cannot be interpreted as an integer
-Thu, 01 Dec 2016 20:58:24 util.py[line:31] ERROR 
-
-read_conn ( (<socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>, None), {} )
-'NoneType' object is not iterable
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 27, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/connect.py", line 26, in read_conn
-    byte_msg, addr = read_conn_tuple(conn, length)
-TypeError: 'NoneType' object is not iterable
-Thu, 01 Dec 2016 20:58:24 util.py[line:31] ERROR 
-
-read_msg ( (<network.PMDatagram.PMDatagram object at 0x1f2528c>, <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>), {} )
-coercing to str: need a bytes-like object, NoneType found
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 27, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 27, in read_msg
-    self.msg = str(connect.read_conn(conn, self.msg_len), "utf-8")
-TypeError: coercing to str: need a bytes-like object, NoneType found
+Thu, 01 Dec 2016 21:38:16 Group.py[line:25] INFO 1 threads running before broadcast
+Thu, 01 Dec 2016 21:39:31 Group.py[line:25] INFO 1 threads running before broadcast
+Thu, 01 Dec 2016 21:39:31 Group.py[line:27] INFO 1 threads running after broadcast
+Thu, 01 Dec 2016 21:39:34 Group.py[line:25] INFO 1 threads running before broadcast
+Thu, 01 Dec 2016 21:39:34 Group.py[line:27] INFO 1 threads running after broadcast
+Thu, 01 Dec 2016 21:39:37 Group.py[line:25] INFO 2 threads running before broadcast
+Thu, 01 Dec 2016 21:39:37 Group.py[line:27] INFO 2 threads running after broadcast
+Thu, 01 Dec 2016 21:39:40 Group.py[line:25] INFO 2 threads running before broadcast
+Thu, 01 Dec 2016 21:39:40 Group.py[line:27] INFO 2 threads running after broadcast
+Thu, 01 Dec 2016 21:39:45 Group.py[line:25] INFO 2 threads running before broadcast
+Thu, 01 Dec 2016 21:39:45 Group.py[line:27] INFO 2 threads running after broadcast
+Thu, 01 Dec 2016 21:39:48 Group.py[line:25] INFO 2 threads running before broadcast
+Thu, 01 Dec 2016 21:39:48 Group.py[line:27] INFO 2 threads running after broadcast
+Thu, 01 Dec 2016 21:39:48 Group.py[line:25] INFO 2 threads running before broadcast
+Thu, 01 Dec 2016 21:39:48 Group.py[line:27] INFO 2 threads running after broadcast
+Thu, 01 Dec 2016 21:39:49 Group.py[line:25] INFO 2 threads running before broadcast
+Thu, 01 Dec 2016 21:39:49 Group.py[line:27] INFO 2 threads running after broadcast
+Thu, 01 Dec 2016 21:39:49 Group.py[line:25] INFO 2 threads running before broadcast
+Thu, 01 Dec 2016 21:39:49 Group.py[line:27] INFO 2 threads running after broadcast

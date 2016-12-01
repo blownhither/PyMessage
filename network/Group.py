@@ -29,3 +29,4 @@ class Group:
     def add_conn(self, conn):
         self.conn_pool.append(conn)
         self.thread_pool.spawn(self.thread_routine, conn)
+        print("Spawned")

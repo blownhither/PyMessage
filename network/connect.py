@@ -35,4 +35,5 @@ def write_conn(conn, byte_msg):
         return conn.send(byte_msg)
     except ConnectionError as e:
         eventlet.kill(eventlet.getcurrent())
+        raise e
 

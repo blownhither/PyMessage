@@ -31,7 +31,6 @@ def accept_any(server):
     while True:
         conn = None
         while conn is None:
-            print(".", end="")
             try:
                 conn, address = server.accept()
             except socket.timeout as t:
@@ -42,7 +41,7 @@ def accept_any(server):
         print("Accepted")
         # eventlet.spawn_n(handle, conn)
         eventlet.spawn_n(g.add_conn, conn)
-        print("Spawned")
+
 
 
 pool = eventlet.GreenPool(10000)

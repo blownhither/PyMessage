@@ -1,5 +1,6 @@
 !*.py
-!**.py
+!client/**/*.py
+!network/**/*.py
 !*.cpp
 !*.c
 !*.java

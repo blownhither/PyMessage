@@ -8,7 +8,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
 from client.util import *
 import socket
-import json, pub_config
+import json, pub_config, eventlet
 
 
 class MainWindow(QMainWindow):
@@ -189,6 +189,7 @@ class Chat_Box(QWidget):
             try:
                 self.sock.connect(('127.0.0.1', 8888))
                 success = True
+                eventlet.spawn(self.connect_handler)
             except Exception as e:
                 print('Connect failed')
         if not success:
@@ -199,6 +200,7 @@ class Chat_Box(QWidget):
             while True:
                 data = self.sock.recv(65536)
                 data = json.loads(data)
+                eventlet.sleep(0)
                 if data['type'] == pub_config.SERVER_SEND_MSG:
                     self.show_msg(user=data['sender'], content=data['content'])
                 elif data['type'] == pub_config.RETURN_GROUP_MEMBERS:

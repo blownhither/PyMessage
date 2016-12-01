@@ -203,3 +203,33 @@ Traceback (most recent call last):
   File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 28, in read_msg
     self.msg = str(connect.read_conn(conn, self.msg_len), "utf-8")
 TypeError: coercing to str: need a bytes-like object, tuple found
+Thu, 01 Dec 2016 20:25:39 util.py[line:19] ERROR 
+
+read_conn_tuple ( (<socket.socket fd=7, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>, 0), {} )
+[Errno 54] Connection reset by peer
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/connect.py", line 16, in read_conn_tuple
+    byte_msg, addr = conn.recvfrom(length)
+ConnectionResetError: [Errno 54] Connection reset by peer
+Thu, 01 Dec 2016 20:25:39 util.py[line:19] ERROR 
+
+read_conn ( (<socket.socket fd=7, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>, 0), {} )
+'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/connect.py", line 24, in read_conn
+    byte_msg, addr = read_conn_tuple(conn, length)
+TypeError: 'NoneType' object is not iterable
+Thu, 01 Dec 2016 20:25:39 util.py[line:19] ERROR 
+
+read_msg ( (<network.PMDatagram.PMDatagram object at 0x1f417cc>, <socket.socket fd=7, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>), {} )
+coercing to str: need a bytes-like object, NoneType found
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 27, in read_msg
+    self.msg = str(connect.read_conn(conn, self.msg_len), "utf-8")
+TypeError: coercing to str: need a bytes-like object, NoneType found

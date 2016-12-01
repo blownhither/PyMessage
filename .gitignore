@@ -3,6 +3,7 @@
 !*.py
 !*/
 !**/*.py
+!push.sh
 !*.cpp
 !*.c
 !*.java

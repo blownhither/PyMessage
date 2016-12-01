@@ -1,234 +1,59 @@
-Thu, 01 Dec 2016 15:00:50 util.py[line:19] ERROR 
+Thu, 01 Dec 2016 20:58:24 util.py[line:31] ERROR 
 
-parse_len ( ('',), {} )
-Invalid length header
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 17, in parse_len
-    msg_len = int(msg[: config.HEADER_LEN])
-ValueError: invalid literal for int() with base 10: ''
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 19, in parse_len
-    raise Exception("Invalid length header")    # TODO: use other exception
-Exception: Invalid length header
-Thu, 01 Dec 2016 15:00:50 util.py[line:19] ERROR 
-
-read_msg ( (<network.PMDatagram.PMDatagram object at 0x7b670c>, <socket.socket fd=4, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 59954), raddr=('127.0.0.1', 8888)>), {} )
-'NoneType' object cannot be interpreted as an integer
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 26, in read_msg
-    self.msg = str(conn.recv(self.msg_len), "utf-8")
-TypeError: 'NoneType' object cannot be interpreted as an integer
-Thu, 01 Dec 2016 15:10:19 util.py[line:19] ERROR 
-
-parse_len ( (b'', 'utf-8'), {} )
-parse_len() takes 1 positional argument but 2 were given
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
-    return func(*args, **kwargs)
-TypeError: parse_len() takes 1 positional argument but 2 were given
-Thu, 01 Dec 2016 15:10:19 util.py[line:19] ERROR 
-
-read_msg ( (<network.PMDatagram.PMDatagram object at 0x7b670c>, <socket.socket fd=4, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 59987), raddr=('127.0.0.1', 8888)>), {} )
-'NoneType' object cannot be interpreted as an integer
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 27, in read_msg
-    self.msg = str(conn.recv(self.msg_len), "utf-8")
-TypeError: 'NoneType' object cannot be interpreted as an integer
-Thu, 01 Dec 2016 15:12:01 util.py[line:19] ERROR 
-
-read_msg ( (<network.PMDatagram.PMDatagram object at 0x162748c>, <socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>), {} )
+read_conn_tuple ( (<socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>, 4), {} )
 [Errno 54] Connection reset by peer
 Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 24, in read_msg
-    byte_len, self.addr = conn.recvfrom(config.HEADER_LEN)
-ConnectionResetError: [Errno 54] Connection reset by peer
-Thu, 01 Dec 2016 15:15:25 util.py[line:19] ERROR 
-
-send_msg ( (<network.PMDatagram.PMDatagram object at 0x7b670c>, <socket.socket fd=4, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 60031)>), {} )
-[Errno 32] Broken pipe
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 32, in send_msg
-    conn.send(byte_msg)
-BrokenPipeError: [Errno 32] Broken pipe
-Thu, 01 Dec 2016 15:15:25 util.py[line:19] ERROR 
-
-read_msg ( (<network.PMDatagram.PMDatagram object at 0x7b670c>, <socket.socket fd=4, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 60031)>), {} )
-[Errno 54] Connection reset by peer
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 24, in read_msg
-    byte_len, self.addr = conn.recvfrom(config.HEADER_LEN)
-ConnectionResetError: [Errno 54] Connection reset by peer
-Thu, 01 Dec 2016 15:57:03 util.py[line:19] ERROR 
-
-send_msg ( (<network.PMDatagram.PMDatagram object at 0x1f39c0c>, <socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>), {} )
-[Errno 32] Broken pipe
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 32, in send_msg
-    conn.send(byte_msg)
-BrokenPipeError: [Errno 32] Broken pipe
-Thu, 01 Dec 2016 15:57:03 util.py[line:19] ERROR 
-
-read_msg ( (<network.PMDatagram.PMDatagram object at 0x1b011ec>, <socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>), {} )
-[Errno 54] Connection reset by peer
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 24, in read_msg
-    byte_len, self.addr = conn.recvfrom(config.HEADER_LEN)
-ConnectionResetError: [Errno 54] Connection reset by peer
-Thu, 01 Dec 2016 19:54:12 util.py[line:19] ERROR 
-
-read_msg ( (<network.PMDatagram.PMDatagram object at 0x12b672c>, <socket.socket fd=4, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 62189)>), {} )
-[Errno 54] Connection reset by peer
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 24, in read_msg
-    byte_len, self.addr = conn.recvfrom(config.HEADER_LEN)
-ConnectionResetError: [Errno 54] Connection reset by peer
-Thu, 01 Dec 2016 20:11:06 util.py[line:19] ERROR 
-
-read_conn ( (<socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 62496)>, 4), {} )
-local variable 'byte_msg' referenced before assignment
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/connect.py", line 12, in read_conn
-    while byte_msg is None:
-UnboundLocalError: local variable 'byte_msg' referenced before assignment
-Thu, 01 Dec 2016 20:11:06 util.py[line:19] ERROR 
-
-read_msg ( (<network.PMDatagram.PMDatagram object at 0x1f276ec>, <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 62496)>), {} )
-'NoneType' object is not iterable
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 26, in read_msg
-    byte_len, self.addr = connect.read_conn(conn, config.HEADER_LEN)
-TypeError: 'NoneType' object is not iterable
-Thu, 01 Dec 2016 20:11:06 util.py[line:19] ERROR 
-
-read_conn ( (<socket.socket fd=4, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 62496)>, 4), {} )
-local variable 'byte_msg' referenced before assignment
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/connect.py", line 12, in read_conn
-    while byte_msg is None:
-UnboundLocalError: local variable 'byte_msg' referenced before assignment
-Thu, 01 Dec 2016 20:11:06 util.py[line:19] ERROR 
-
-read_msg ( (<network.PMDatagram.PMDatagram object at 0x1ab672c>, <socket.socket fd=4, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 62496)>), {} )
-'NoneType' object is not iterable
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 26, in read_msg
-    byte_len, self.addr = connect.read_conn(conn, config.HEADER_LEN)
-TypeError: 'NoneType' object is not iterable
-Thu, 01 Dec 2016 20:13:25 util.py[line:19] ERROR 
-
-read_conn ( (<socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 62511)>, 4), {} )
-local variable 'byte_msg' referenced before assignment
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/connect.py", line 12, in read_conn
-    while byte_msg is None:
-UnboundLocalError: local variable 'byte_msg' referenced before assignment
-Thu, 01 Dec 2016 20:13:25 util.py[line:19] ERROR 
-
-read_msg ( (<network.PMDatagram.PMDatagram object at 0x1f2a06c>, <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 62511)>), {} )
-'NoneType' object is not iterable
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 26, in read_msg
-    byte_len, self.addr = connect.read_conn(conn, config.HEADER_LEN)
-TypeError: 'NoneType' object is not iterable
-Thu, 01 Dec 2016 20:14:16 util.py[line:19] ERROR 
-
-read_conn ( (<socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 62518)>, 4), {} )
-local variable 'byte_msg' referenced before assignment
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/connect.py", line 12, in read_conn
-    while byte_msg is None:
-UnboundLocalError: local variable 'byte_msg' referenced before assignment
-Thu, 01 Dec 2016 20:14:16 util.py[line:19] ERROR 
-
-read_msg ( (<network.PMDatagram.PMDatagram object at 0x17276ec>, <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 62518)>), {} )
-'NoneType' object is not iterable
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 26, in read_msg
-    byte_len, self.addr = connect.read_conn(conn, config.HEADER_LEN)
-TypeError: 'NoneType' object is not iterable
-Thu, 01 Dec 2016 20:16:30 util.py[line:19] ERROR 
-
-read_msg ( (<network.PMDatagram.PMDatagram object at 0x173eecc>, <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 62530)>), {} )
-coercing to str: need a bytes-like object, tuple found
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 28, in read_msg
-    self.msg = str(connect.read_conn(conn, self.msg_len), "utf-8")
-TypeError: coercing to str: need a bytes-like object, tuple found
-Thu, 01 Dec 2016 20:16:30 util.py[line:19] ERROR 
-
-read_msg ( (<network.PMDatagram.PMDatagram object at 0x18b672c>, <socket.socket fd=4, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 62530), raddr=('127.0.0.1', 8888)>), {} )
-coercing to str: need a bytes-like object, tuple found
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 28, in read_msg
-    self.msg = str(connect.read_conn(conn, self.msg_len), "utf-8")
-TypeError: coercing to str: need a bytes-like object, tuple found
-Thu, 01 Dec 2016 20:25:39 util.py[line:19] ERROR 
-
-read_conn_tuple ( (<socket.socket fd=7, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>, 0), {} )
-[Errno 54] Connection reset by peer
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 27, in logged_func
     return func(*args, **kwargs)
   File "/Users/bh/projects/python/pyMessage/network/connect.py", line 16, in read_conn_tuple
     byte_msg, addr = conn.recvfrom(length)
 ConnectionResetError: [Errno 54] Connection reset by peer
-Thu, 01 Dec 2016 20:25:39 util.py[line:19] ERROR 
+Thu, 01 Dec 2016 20:58:24 util.py[line:31] ERROR 
 
-read_conn ( (<socket.socket fd=7, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>, 0), {} )
+read_conn ( (<socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>, 4), {} )
 'NoneType' object is not iterable
 Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 27, in logged_func
     return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/connect.py", line 24, in read_conn
+  File "/Users/bh/projects/python/pyMessage/network/connect.py", line 26, in read_conn
     byte_msg, addr = read_conn_tuple(conn, length)
 TypeError: 'NoneType' object is not iterable
-Thu, 01 Dec 2016 20:25:39 util.py[line:19] ERROR 
+Thu, 01 Dec 2016 20:58:24 util.py[line:31] ERROR 
 
-read_msg ( (<network.PMDatagram.PMDatagram object at 0x1f417cc>, <socket.socket fd=7, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>), {} )
+parse_len ( (None,), {} )
+'NoneType' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 27, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 17, in parse_len
+    msg_len = int.from_bytes(byte_msg[: config.HEADER_LEN], config.ENDIAN)
+TypeError: 'NoneType' object is not subscriptable
+Thu, 01 Dec 2016 20:58:24 util.py[line:31] ERROR 
+
+read_conn_tuple ( (<socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>, None), {} )
+'NoneType' object cannot be interpreted as an integer
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 27, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/connect.py", line 16, in read_conn_tuple
+    byte_msg, addr = conn.recvfrom(length)
+TypeError: 'NoneType' object cannot be interpreted as an integer
+Thu, 01 Dec 2016 20:58:24 util.py[line:31] ERROR 
+
+read_conn ( (<socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>, None), {} )
+'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 27, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/connect.py", line 26, in read_conn
+    byte_msg, addr = read_conn_tuple(conn, length)
+TypeError: 'NoneType' object is not iterable
+Thu, 01 Dec 2016 20:58:24 util.py[line:31] ERROR 
+
+read_msg ( (<network.PMDatagram.PMDatagram object at 0x1f2528c>, <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>), {} )
 coercing to str: need a bytes-like object, NoneType found
 Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 27, in logged_func
     return func(*args, **kwargs)
   File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 27, in read_msg
     self.msg = str(connect.read_conn(conn, self.msg_len), "utf-8")

@@ -1,0 +1,75 @@
+Thu, 01 Dec 2016 15:00:50 util.py[line:19] ERROR 
+
+parse_len ( ('',), {} )
+Invalid length header
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 17, in parse_len
+    msg_len = int(msg[: config.HEADER_LEN])
+ValueError: invalid literal for int() with base 10: ''
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 19, in parse_len
+    raise Exception("Invalid length header")    # TODO: use other exception
+Exception: Invalid length header
+Thu, 01 Dec 2016 15:00:50 util.py[line:19] ERROR 
+
+read_msg ( (<network.PMDatagram.PMDatagram object at 0x7b670c>, <socket.socket fd=4, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 59954), raddr=('127.0.0.1', 8888)>), {} )
+'NoneType' object cannot be interpreted as an integer
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 26, in read_msg
+    self.msg = str(conn.recv(self.msg_len), "utf-8")
+TypeError: 'NoneType' object cannot be interpreted as an integer
+Thu, 01 Dec 2016 15:10:19 util.py[line:19] ERROR 
+
+parse_len ( (b'', 'utf-8'), {} )
+parse_len() takes 1 positional argument but 2 were given
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
+    return func(*args, **kwargs)
+TypeError: parse_len() takes 1 positional argument but 2 were given
+Thu, 01 Dec 2016 15:10:19 util.py[line:19] ERROR 
+
+read_msg ( (<network.PMDatagram.PMDatagram object at 0x7b670c>, <socket.socket fd=4, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 59987), raddr=('127.0.0.1', 8888)>), {} )
+'NoneType' object cannot be interpreted as an integer
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 27, in read_msg
+    self.msg = str(conn.recv(self.msg_len), "utf-8")
+TypeError: 'NoneType' object cannot be interpreted as an integer
+Thu, 01 Dec 2016 15:12:01 util.py[line:19] ERROR 
+
+read_msg ( (<network.PMDatagram.PMDatagram object at 0x162748c>, <socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>), {} )
+[Errno 54] Connection reset by peer
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 24, in read_msg
+    byte_len, self.addr = conn.recvfrom(config.HEADER_LEN)
+ConnectionResetError: [Errno 54] Connection reset by peer
+Thu, 01 Dec 2016 15:15:25 util.py[line:19] ERROR 
+
+send_msg ( (<network.PMDatagram.PMDatagram object at 0x7b670c>, <socket.socket fd=4, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 60031)>), {} )
+[Errno 32] Broken pipe
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 32, in send_msg
+    conn.send(byte_msg)
+BrokenPipeError: [Errno 32] Broken pipe
+Thu, 01 Dec 2016 15:15:25 util.py[line:19] ERROR 
+
+read_msg ( (<network.PMDatagram.PMDatagram object at 0x7b670c>, <socket.socket fd=4, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 60031)>), {} )
+[Errno 54] Connection reset by peer
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 15, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 24, in read_msg
+    byte_len, self.addr = conn.recvfrom(config.HEADER_LEN)
+ConnectionResetError: [Errno 54] Connection reset by peer

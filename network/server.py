@@ -4,7 +4,7 @@ from PIL import Image
 
 import network.config as config
 from network.PMDatagram import PMDatagram as Pmd
-
+from network.Group import Group
 
 
 def handle(conn):
@@ -25,8 +25,9 @@ def serialize_img(img_path):
         img.resize(w * ratio, h * ratio)
     return img.tobytes()
 
+g = Group(8848)
 
-def accept_all(server):
+def accept_any(server):
     while True:
         conn = None
         while conn is None:
@@ -39,8 +40,9 @@ def accept_all(server):
 
             # handle(conn)
         print("Accepted")
-        eventlet.spawn_n(handle, conn)
-        print("spawned")
+        # eventlet.spawn_n(handle, conn)
+        eventlet.spawn_n(g.add_conn, conn)
+        print("Spawned")
 
 
 pool = eventlet.GreenPool(10000)
@@ -52,7 +54,7 @@ if __name__ == "__main__":
     server.bind((config.HOST, config.PORT))
     server.listen(config.MAX)
     print("Connected")
-    main_thread = eventlet.spawn(accept_all, server)
+    main_thread = eventlet.spawn(accept_any, server)
     main_thread.wait()
         # pool.spawn(handle, conn)
 

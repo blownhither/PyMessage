@@ -9,7 +9,8 @@ from network.util import *
 
 
 class Client:
-    pass
+    def __init__(self, client_id):
+        # TODO: verify client ID
 
 
 @exception_log

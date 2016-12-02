@@ -5,6 +5,8 @@
 from struct import Struct
 from PIL import Image
 import base64
+from threading import Thread, Event
+import time
 
 #
 # def pr(a):
@@ -77,7 +79,22 @@ def img_from_srial(byte_img):
     s = Struct().pack(byte_img)
     img.show()
 
+
     Image.frombytes()
+
+
+class MyThread(Thread):
+    def __init__(self, signal):
+        Thread.__init__(self)
+        self.signal = signal
+
+    def run(self):
+        while True:
+            print("Thread started")
+            # self.signal.wait()
+            time.sleep(0.5)
+
+
 if __name__ == "__main__":
     # p = Pool(2)
     # gp = eventlet.GreenPool(3)
@@ -87,4 +104,11 @@ if __name__ == "__main__":
     # B = [1,1,0,0,0,1,1]
     # a, b= devide(A, B)
     # print(a,b)
-    save_img(serialize_img("network/a.png"), "network/b.png")
+    # save_img(serialize_img("network/a.png"), "network/b.png")
+    e = Event()
+    t = MyThread(e)
+    t.start()
+    e.set()
+    while True:
+        print("Main")
+        time.sleep(3)

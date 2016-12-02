@@ -5,6 +5,8 @@ import eventlet
 import socket
 import multiprocessing as mtp
 import random
+from threading import Thread
+import time
 
 import network.config as config
 from network.PMDatagram import PMDatagram as Pmd
@@ -16,7 +18,7 @@ from network.util import *
 #     pool.waitall()
 
 
-class Client:
+class Client(Thread):
     def __init__(self, client_id):
         # TODO: verify client ID
         self.client_id = client_id
@@ -28,8 +30,15 @@ class Client:
         self.read_queue = []
         self.send_lock = mtp.Lock()
         self.read_lock = mtp.Lock()
-        self.read_thread = eventlet.spawn(self._read_routine)
-        self.send_thread = eventlet.spawn(self._send_routine)
+        # self.read_thread = eventlet.spawn(self._read_routine)
+        # self.send_thread = eventlet.spawn(self._send_routine)
+
+    """override Thread.run"""
+    def run(self):
+        read_thread = eventlet.spawn(self._read_routine)
+        send_thread = eventlet.spawn(self._send_routine)
+        read_thread.wait()
+        send_thread.wait()
 
     def _read_routine(self):
         while True:
@@ -84,11 +93,10 @@ class Client:
 
 if __name__ == "__main__":
     client = Client(8848)
-
+    client.start()
     while True:
-
         client.put_msg(str(random.randint(1, 1000)))
-        eventlet.sleep(2)
+        time.sleep(1)
 
     # eventlet.spawn(client.start)
     # eventlet.spawn(main)

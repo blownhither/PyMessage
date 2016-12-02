@@ -11,9 +11,9 @@ from network.PMDatagram import PMDatagram as Pmd
 from network.util import *
 
 
-def pool_wait_all(pool):
-    print("Threads start")
-    pool.waitall()
+# def pool_wait_all(pool):
+#     print("Threads start")
+#     pool.waitall()
 
 
 class Client:
@@ -26,12 +26,10 @@ class Client:
         # self.thread_pool = eventlet.GreenPool(2)
         self.send_queue = []
         self.read_queue = []
+        self.send_lock = mtp.Lock()
+        self.read_lock = mtp.Lock()
         self.read_thread = eventlet.spawn(self._read_routine)
-        # self.read_thread = self.thread_pool.spawn(self._read_routine)
         self.send_thread = eventlet.spawn(self._send_routine)
-        # self.send_thread = self.thread_pool.spawn(self._send_routine)
-        # p = Pool(processes=2)
-        # p.apply_async(pool_wait_all, (self.thread_pool,))
 
     def _read_routine(self):
         while True:
@@ -40,10 +38,9 @@ class Client:
             msg = p.read_msg(self.server)
             # TODO:
             print("Server: " + msg)
+            self.read_lock.acquire()
             self.read_queue.append(msg)
-
-    def read_routine(self):
-        self._read_routine()
+            self.read_lock.release()
 
     def _send_routine(self):
         while True:
@@ -56,7 +53,15 @@ class Client:
             print("Sent")
 
     def put_msg(self, msg):
+        self.send_lock.acquire()
         self.send_queue.append(msg)
+        self.send_lock.release()
+
+    def read_msg(self):
+        self.read_lock.acquire()
+        ret = self.read_queue.pop(0)
+        self.read_lock.release()
+        return ret
 
 
 # @exception_log

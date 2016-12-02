@@ -17,3 +17,13 @@ Thu, 01 Dec 2016 21:39:49 Group.py[line:25] INFO 2 threads running before broadc
 Thu, 01 Dec 2016 21:39:49 Group.py[line:27] INFO 2 threads running after broadcast
 Thu, 01 Dec 2016 21:39:49 Group.py[line:25] INFO 2 threads running before broadcast
 Thu, 01 Dec 2016 21:39:49 Group.py[line:27] INFO 2 threads running after broadcast
+Fri, 02 Dec 2016 11:11:22 PngImagePlugin.py[line:135] DEBUG STREAM b'IHDR' 16 13
+Fri, 02 Dec 2016 11:11:22 PngImagePlugin.py[line:135] DEBUG STREAM b'sBIT' 41 4
+Fri, 02 Dec 2016 11:11:22 PngImagePlugin.py[line:542] DEBUG b'sBIT' 41 4 (unknown)
+Fri, 02 Dec 2016 11:11:22 PngImagePlugin.py[line:135] DEBUG STREAM b'pHYs' 57 9
+Fri, 02 Dec 2016 11:11:22 PngImagePlugin.py[line:135] DEBUG STREAM b'IDAT' 78 8192
+Fri, 02 Dec 2016 13:43:04 PngImagePlugin.py[line:135] DEBUG STREAM b'IHDR' 16 13
+Fri, 02 Dec 2016 13:43:04 PngImagePlugin.py[line:135] DEBUG STREAM b'sBIT' 41 4
+Fri, 02 Dec 2016 13:43:04 PngImagePlugin.py[line:542] DEBUG b'sBIT' 41 4 (unknown)
+Fri, 02 Dec 2016 13:43:04 PngImagePlugin.py[line:135] DEBUG STREAM b'pHYs' 57 9
+Fri, 02 Dec 2016 13:43:04 PngImagePlugin.py[line:135] DEBUG STREAM b'IDAT' 78 8192

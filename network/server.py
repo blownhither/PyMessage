@@ -1,6 +1,6 @@
 import eventlet
 import socket
-from PIL import Image
+
 
 import network.config as config
 from network.PMDatagram import PMDatagram as Pmd
@@ -17,15 +17,8 @@ def handle(conn):
         p.send_msg(conn)
 
 
-def serialize_img(img_path):
-    img = Image.open(img_path)
-    w, h = img.size
-    ratio = config.IMAGE_MAX_SOLUTION / (w * h)
-    if ratio < 1:
-        img.resize(w * ratio, h * ratio)
-    return img.tobytes()
-
 g = Group(8848)
+
 
 def accept_any(server):
     while True:

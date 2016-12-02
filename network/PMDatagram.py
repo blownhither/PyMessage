@@ -1,3 +1,5 @@
+import json
+
 import network.config as config
 import network.connect as connect
 from network.util import *
@@ -9,6 +11,10 @@ class PMDatagram:
         self.msg_len = None
         self.msg = msg
         self.state = None   # TODO:
+        self.json_decoder = json.JSONEncoder()
+        self.json_decoder.item_separator = ","
+        self.json_decoder.key_separator = ":"
+        self.json_decoder.allow_nan = True
 
     @staticmethod
     @exception_log
@@ -31,6 +37,15 @@ class PMDatagram:
     def send_msg(self, conn):
         byte_msg = len(self.msg).to_bytes(config.HEADER_LEN, config.ENDIAN) + bytes(self.msg, "utf-8")
         connect.write_conn(conn, byte_msg)
+
+    @exception_log
+    def read_json(self, conn):
+        return json.loads(self.read_msg(conn))
+
+    @exception_log
+    def send_json(self, conn, dict_data):
+        msg = self.json_decoder.encode(dict_data)
+        self.send_msg(msg)
 
     @exception_log
     def send_msg_all(self, conn):

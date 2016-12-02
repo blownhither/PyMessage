@@ -17,13 +17,19 @@ from network.util import *
 #     print("Threads start")
 #     pool.waitall()
 
+"""Usage:
+    client = Client(8848)
+    client.start()
 
+    # anytime
+    client.put_msg(msg)
+"""
 class Client(Thread):
     def __init__(self, client_id):
         Thread.__init__(self)
         self.client_id = client_id
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.connect((config.HOST, config.PORT))
+        self.server.connect((config.CLIENT_HOST, config.PORT))
         print("Connected")
         # self.thread_pool = eventlet.GreenPool(2)
         self.send_queue = []
@@ -73,30 +79,12 @@ class Client(Thread):
         return ret
 
 
-# @exception_log
-# def read_msg(server):
-#     p = Pmd(server=server)
-#     return p.get_raw_msg()
-
-#
-# def main():
-#     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#     server.connect((config.HOST, config.PORT))
-#     print("Connected")
-#     while True:
-#         msg = input("Msg: ")
-#         p = Pmd(msg)
-#         p.send_msg(server)
-#         ans = p.read_msg(server)
-#         print("Server: " + ans)
-
-
 if __name__ == "__main__":
     client = Client(8848)
     client.start()
     while True:
         client.put_msg(str(random.randint(1, 1000)))
-        time.sleep(1)
+
 
     # eventlet.spawn(client.start)
     # eventlet.spawn(main)

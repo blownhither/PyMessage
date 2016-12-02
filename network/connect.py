@@ -28,7 +28,7 @@ def read_conn(conn, length):
     return byte_msg
 
 
-#TODO:  @exception_log
+@exception_log
 def write_conn(conn, byte_msg):
     conn.settimeout(config.TIMEOUT)
     try:

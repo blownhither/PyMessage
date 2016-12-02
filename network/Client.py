@@ -20,7 +20,7 @@ from network.util import *
 
 class Client(Thread):
     def __init__(self, client_id):
-        # TODO: verify client ID
+        Thread.__init__(self)
         self.client_id = client_id
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.connect((config.HOST, config.PORT))

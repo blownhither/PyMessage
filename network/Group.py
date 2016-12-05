@@ -32,7 +32,6 @@ class Group:
     def add_conn(self, conn):
         self._conn_pool.append(conn)
         self._thread_pool.spawn(self.thread_routine, conn)
-        print("Spawned")
 
     def conn_exit(self):
         # TODO:

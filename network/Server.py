@@ -25,18 +25,18 @@ class Server(Thread):
 
     def run(self):
         self._main_thread = eventlet.spawn(self._accept_any)
-        print("Spawned")
         self._main_thread.wait()
 
     """Those who are connected and not yet in any group"""
     def _handle_idle(self, conn):
+        p = Pmd()
+        print("Spawned")
         while True:
-            p = Pmd()
-            d = p.read_json(self._server)
+            d = p.read_json(conn)
             print(d)
             t = d.get(fd[0])
             if t is not None and t == pc.GET_GROUPS:
-                p.send_groups(self.get_group_info())
+                p.send_groups(conn, self.get_group_info())
 
         # TODO: Use decent grouping here
         # g = self._add_group(8848)
@@ -87,4 +87,8 @@ if __name__ == "__main__":
     s.start()
     s.add_group(1312)
     s.add_group(3215)
+
     print(s.get_group_info())
+
+
+

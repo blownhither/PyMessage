@@ -38,7 +38,7 @@ class PMDatagram:
     def send_msg(self, conn, msg=None):
         if msg is None:
             msg = self.msg
-        byte_msg = len(self.msg).to_bytes(config.HEADER_LEN, config.ENDIAN) + bytes(self.msg, "utf-8")
+        byte_msg = len(msg).to_bytes(config.HEADER_LEN, config.ENDIAN) + bytes(msg, "utf-8")
         connect.write_conn(conn, byte_msg)
 
     @exception_log
@@ -50,8 +50,8 @@ class PMDatagram:
     @exception_log
     def send_json(self, conn, dict_data):
         msg = self.json_decoder.encode(dict_data)
-        print(msg)
         self.send_msg(conn, msg)
+        print(msg)
 
     @exception_log
     def send_msg_all(self, conn):

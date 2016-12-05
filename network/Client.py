@@ -30,20 +30,24 @@ class Client(Thread):
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.connect((config.CLIENT_HOST, config.PORT))
         print("Connected")
-        # self.thread_pool = eventlet.GreenPool(2)
         self.send_queue = []
         self.read_queue = []
         self.send_lock = mtp.Lock()
         self.read_lock = mtp.Lock()
-        # self.read_thread = eventlet.spawn(self._read_routine)
-        # self.send_thread = eventlet.spawn(self._send_routine)
+        # self.thread_pool = eventlet.GreenPool(2)
+        # self.thread_pool.spawn(self._read_routine)
+        # self.thread_pool.spawn(self._send_routine)
+
+        self.read_thread = eventlet.spawn(self._read_routine)
+        self.send_thread = eventlet.spawn(self._send_routine)
 
     """override Thread.run"""
     def run(self):
         read_thread = eventlet.spawn(self._read_routine)
         send_thread = eventlet.spawn(self._send_routine)
-        read_thread.wait()
         send_thread.wait()
+        read_thread.wait()
+        # self.thread_pool.waitall()
 
     def _read_routine(self):
         while True:
@@ -100,9 +104,14 @@ class Client(Thread):
 if __name__ == "__main__":
     client = Client(8848)
     client.start()
+
+    client.get_groups()
+    client.get_groups()
+    client.get_groups()
+
     # while True:
         # client.put_msg(str(random.randint(1, 1000)))
-    client.get_groups()
+
 
     # eventlet.spawn(client.start)
     # eventlet.spawn(main)

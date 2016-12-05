@@ -18,17 +18,20 @@ class Group:
         self.desc = desc
         self.name = name
         self._users = Users()
+        self._broadcast_queue = []      # JSON Datagrams
         # Group._group_pool[group_id] = self._conn_pool
         self._thread_pool = eventlet.GreenPool(config.CONN_THREAD_NUM)
 
     def set_desc(self, desc):
         self.desc = desc
 
-    def echo_routine(self, conn):
-        data = Pmd()
+    def broadcast_routine(self, conn):
         while True:
-            data.read_raw_msg(conn)
-            self._thread_pool.imap(data.send_raw_msg, self._users.all_conns())
+            if len(self._broadcast_queue) != 0:
+                data = self._broadcast_queue.pop(0)
+                conns = self._users.all_conns()
+                p = Pmd(data=data)
+                self._thread_pool.imap(p.send_json, conns)
 
     def add_user(self, conn, user_id, user_name, user_desc):
         self._users.add_user(conn, user_id, user_name, user_desc)

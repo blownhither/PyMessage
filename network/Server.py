@@ -45,7 +45,11 @@ class Server(Thread):
                     self._add_group(d.get[fd["g"]])
                     self.join_group(d.get[fd["g"]], conn)
                 elif t == pc.GET_GROUP_MEMBERS:
-                    self.get_group_users()
+                    group_id = d.get(fd["g"])
+                    if group_id is not None:
+                        l = self.get_group_members(group_id)
+                        if l is not None:
+                            p.send_group_members(conn, group_id, l)
 
 
     """ with parameter check """
@@ -74,13 +78,13 @@ class Server(Thread):
         return [x.group_info() for x in self._group_pool]
 
     """ Format [(user_id, user_name, user_desc), ... ]"""
-    def get_group_users(self, group_id):
+    def get_group_members(self, group_id):
         g = self._group_pool.get(group_id)
         if g is not None:
             warning_str = "Get users from invalid group ID " + str(group_id)
             print(warning_str)
             logging.warning(warning_str)
-            return False
+            return None
         return g.user_list()
 
     def _accept_any(self):

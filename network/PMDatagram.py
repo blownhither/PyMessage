@@ -8,14 +8,20 @@ from network.util import *
 
 
 class PMDatagram:
-    def __init__(self, msg=None):
+
+    def __init__(self, msg=None, data=None):
         self.msg_len = None
         self.msg = msg
+        self.data = data
         self.state = None   # TODO:
         self.json_decoder = json.JSONEncoder()
         self.json_decoder.item_separator = ","
         self.json_decoder.key_separator = ":"
         self.json_decoder.allow_nan = True
+
+    """ Methods operating on raw data and JSON Datagram
+        most interfaces receive msg as str not bytes unless specified
+    """
 
     @staticmethod
     @exception_log
@@ -26,7 +32,6 @@ class PMDatagram:
             raise Exception("Invalid length header")    # TODO: use other exception
         return msg_len
 
-    """most function receive msg as str not bytes"""
     @exception_log
     def read_raw_msg(self, conn):
         byte_len = connect.read_conn(conn, config.HEADER_LEN)
@@ -55,7 +60,9 @@ class PMDatagram:
         return d
 
     @exception_log
-    def send_json(self, conn, dict_data):
+    def send_json(self, conn, dict_data=None):
+        if dict_data is None:
+            dict_data = self.data
         msg = self.json_decoder.encode(dict_data)
         self.send_raw_msg(conn, msg)
         print("json str : " + msg)
@@ -69,7 +76,9 @@ class PMDatagram:
     def get_raw_msg(self):
         return self.msg
 
-    """Refer to pub_config to read about groups data specifications
+    """
+        Methods about groups
+        Refer to pub_config to read about groups data specifications
         [(group_id, name, n_members), ]
     """
     @exception_log
@@ -94,6 +103,38 @@ class PMDatagram:
     @exception_log
     def parse_groups(self, d):
         if d[fd[0]] != pc.RETURN_GROUPS:
+            raise PMTypeException()
+        l = d.get(fd["l"])
+        if l is None:
+            raise PMDataException()
+        return l
+
+    """ Methods about group members
+        format [(user_id, user_name, user_desc), ... ]
+    """
+
+    @exception_log
+    def require_group_members(self, conn, group_id):
+        d = {
+            fd[0]: pc.GET_GROUP_MEMBERS,
+            fd[1]: group_id,
+            fd[2]: -1,
+        }
+        self.send_json(conn, d)
+
+    @exception_log
+    def send_group_members(self, conn, group_id, tuple_list):
+        d = {
+            fd[0]: pc.RETURN_GROUP_MEMBERS,
+            fd[1]: group_id,
+            fd[2]: -1,
+            fd["l"]: tuple_list
+        }
+        self.send_json(conn, d)
+
+    @exception_log
+    def parse_group_members(self, d):
+        if d[fd[0]] != pc.RETURN_GROUP_MEMBERS:
             raise PMTypeException()
         l = d.get(fd["l"])
         if l is None:

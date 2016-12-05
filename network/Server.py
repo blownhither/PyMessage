@@ -32,8 +32,10 @@ class Server(Thread):
     def _handle_idle(self, conn):
         while True:
             p = Pmd()
-            d = p.send_json(self._server)
-            if d[fd[0]] == pc.GET_GROUPS:
+            d = p.read_json(self._server)
+            print(d)
+            t = d.get(fd[0])
+            if t is not None and t == pc.GET_GROUPS:
                 p.send_groups(self.get_group_info())
 
         # TODO: Use decent grouping here
@@ -71,38 +73,6 @@ class Server(Thread):
     def get_group_info(self):
         return [x.report_info() for x in self._group_pool.values()]
 
-
-# def handle(conn):
-#     while True:
-#         p = Pmd()
-#         print("Receive")
-#         msg = p.read_msg(conn)
-#         print("Reply" + msg)
-#         p = Pmd("You said " + msg)
-#         p.send_msg(conn)
-
-
-# g = Group(8848)
-
-
-# def accept_any(server):
-#     while True:
-#         conn = None
-#         while conn is None:
-#             try:
-#                 conn, address = server.accept()
-#             except socket.timeout as t:
-#                 eventlet.sleep(0.5)
-#             # conn, address = server.accept()
-#
-#             # handle(conn)
-#         print("Accepted")
-#         # eventlet.spawn_n(handle, conn)
-#         eventlet.spawn_n(g.add_conn, conn)
-#
-#
-#
-# pool = eventlet.GreenPool(10000)
 
 if __name__ == "__main__":
     # server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

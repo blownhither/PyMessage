@@ -43,11 +43,14 @@ class PMDatagram:
 
     @exception_log
     def read_json(self, conn):
-        return json.loads(self.read_msg(conn))
+        d = json.loads(self.read_msg(conn))
+        print(d)
+        return d
 
     @exception_log
     def send_json(self, conn, dict_data):
         msg = self.json_decoder.encode(dict_data)
+        print(msg)
         self.send_msg(conn, msg)
 
     @exception_log

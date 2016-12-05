@@ -1,0 +1,10 @@
+Mon, 05 Dec 2016 09:45:13 util.py[line:33] ERROR 
+
+send_msg ( (<network.PMDatagram.PMDatagram object at 0x1f83b4c>, <socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 56518), raddr=('127.0.0.1', 8888)>, '{"m":-1,"g":-1,"T":1}'), {} )
+object of type 'NoneType' has no len()
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 41, in send_msg
+    byte_msg = len(self.msg).to_bytes(config.HEADER_LEN, config.ENDIAN) + bytes(self.msg, "utf-8")
+TypeError: object of type 'NoneType' has no len()

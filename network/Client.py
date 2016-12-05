@@ -101,7 +101,7 @@ if __name__ == "__main__":
     client = Client(8848)
     client.start()
     # while True:
-    #     client.put_msg(str(random.randint(1, 1000)))
+        # client.put_msg(str(random.randint(1, 1000)))
     client.get_groups()
 
     # eventlet.spawn(client.start)

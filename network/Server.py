@@ -3,6 +3,7 @@ import socket
 from threading import Thread
 
 import network.config as config
+from network.util import *
 from network.PMDatagram import PMDatagram as Pmd
 from network.Group import Group
 import pub_config as pc
@@ -13,7 +14,7 @@ class Server(Thread):
     def __init__(self):
         Thread.__init__(self)
         self._group_pool = {}
-        self._idle_pool = {}
+        # self._idle_pool = {}
         self._main_thread = None
 
         self._server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -28,32 +29,59 @@ class Server(Thread):
         self._main_thread.wait()
 
     """Those who are connected and not yet in any group"""
-    def _handle_idle(self, conn):
+    def _handle_any(self, conn):
         p = Pmd()
         print("_handle_idle")
         while True:
             d = p.read_json(conn)
             print(d)
             t = d.get(fd[0])
-            if t is not None and t == pc.GET_GROUPS:
-                p.send_groups(conn, self.get_group_info())
+            if t is not None:
+                if t == pc.GET_GROUPS:
+                    p.send_groups(conn, self.get_group_info())
+                elif t == pc.JOIN_GROUP:
+                    self.join_group(d.get(fd["g"]), conn)
+                elif t == pc.CREATE_GROUP:
+                    self._add_group(d.get[fd["g"]])
+                    self.join_group(d.get[fd["g"]], conn)
+                elif t == pc.GET_GROUP_MEMBERS:
+                    self.get_group_users()
 
-        # TODO: Use decent grouping here
-        # g = self._add_group(8848)
-        # g.add_conn(conn)
-        # return
 
-    def add_group(self, group_id):
-        self._add_group(group_id)
+    """ with parameter check """
+    def join_group(self, group_id, conn):
+        group = self._group_pool.get(group_id)
+        if group_id is None or group is None:
+            warning_str = str(conn) + "Attempt to join invalid group " + str(group_id)
+            print(warning_str)
+            logging.warning(warning_str)
+            return False
+        group.add_conn(conn)
 
     # Throws Exception
     def _add_group(self, group_id, name="Temporary Group", desc=""):
         if self._group_pool.get(group_id) is not None:
-            print("Re-create group_id / groupId collision")
-            raise Exception("Re-create groupId / groupId collision")
+            warning_str = "Re-create group_id / groupId collision on " + str(group_id)
+            print(warning_str)
+            logging.warning(warning_str)
+            return False
         g = Group(group_id=group_id, desc=desc, name=name)
         self._group_pool[group_id] = g
         return g
+
+    """ Format [(group_id, name, n_members), ... ]"""
+    def get_group_info(self):
+        return [x.group_info() for x in self._group_pool]
+
+    """ Format [(user_id, user_name, user_desc), ... ]"""
+    def get_group_users(self, group_id):
+        g = self._group_pool.get(group_id)
+        if g is not None:
+            warning_str = "Get users from invalid group ID " + str(group_id)
+            print(warning_str)
+            logging.warning(warning_str)
+            return False
+        return g.user_list()
 
     def _accept_any(self):
         self._server.settimeout(config.TIMEOUT)
@@ -68,25 +96,12 @@ class Server(Thread):
                     # conn, address = server.accept()
                     # handle(conn)
             print("Accepted" + str(address))
-            eventlet.spawn_n(self._handle_idle, conn)
-
-    def get_group_info(self):
-        return [x.report_info() for x in self._group_pool.values()]
+            eventlet.spawn_n(self._handle_any, conn)
 
 
 if __name__ == "__main__":
-    # server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # server.settimeout(0.5)
-    # server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    # server.bind((config.HOST, config.PORT))
-    # server.listen(config.MAX)
-    # print("Connected")
-    # main_thread = eventlet.spawn(accept_any, server)
-    # main_thread.wait()
     s = Server()
     s.start()
-    s.add_group(1312)
-    s.add_group(3215)
 
     print(s.get_group_info())
 

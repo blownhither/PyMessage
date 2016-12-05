@@ -7,6 +7,8 @@ SERVER_SEND_MSG = 4
 GET_GROUP_MEMBERS = 5
 RETURN_GROUP_MEMBERS = 6
 HISTORY = 7
+JOIN_GROUP = 8
+REGISTER_ALIAS = 9
 
 # PMDatagram Fields
 FIELDS = {
@@ -18,7 +20,7 @@ FIELDS = {
     "FileName": "f", "f": "f",
     "FileText": "ft", "ft": "ft",
     "List": "l", "l": "l",
-
+    "UserId": "u", "u": "u",
     # set to -1 when invalid but necessary
 }
 

@@ -96,5 +96,19 @@ class MyThread(Thread):
             time.sleep(0.5)
 
 
+class T():
+    pub = []
+
+    def __init__(self):
+        T.pub.append(3)
+        print(str(T.pub))
+
 if __name__ == "__main__":
-    pass
+    # server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # server.settimeout(0.5)
+    # server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    # server.bind((config.HOST, config.PORT))
+    # server.listen(config.MAX)
+    # print("Connected")
+    # main_thread = eventlet.spawn(accept_any, server)
+    # main_thread.wait()

@@ -10,12 +10,9 @@ import time
 
 import network.config as config
 from network.PMDatagram import PMDatagram as Pmd
+from network.PMDatagram import *
 from network.util import *
 
-
-# def pool_wait_all(pool):
-#     print("Threads start")
-#     pool.waitall()
 
 """Usage:
     client = Client(8848)
@@ -24,6 +21,8 @@ from network.util import *
     # anytime
     client.put_msg(msg)
 """
+
+
 class Client(Thread):
     def __init__(self, client_id):
         Thread.__init__(self)
@@ -78,13 +77,32 @@ class Client(Thread):
         self.read_lock.release()
         return ret
 
+    # feedback will come through reader when PMD comes with type=GET_GROUPS
+    def get_groups(self):
+        p = Pmd()
+        p.require_groups(self.server)
+
+        # msg = p.read_msg(self.server)
+        # flag = True
+        # while flag:
+        #     try:
+        #         p.parse_groups(msg)
+        #         flag = False
+        #     except PMTypeException as e:
+        #         flag = True
+        #         self.read_queue.append(msg)
+
+
+
+
+
 
 if __name__ == "__main__":
     client = Client(8848)
     client.start()
-    while True:
-        client.put_msg(str(random.randint(1, 1000)))
-
+    # while True:
+    #     client.put_msg(str(random.randint(1, 1000)))
+    client.get_groups()
 
     # eventlet.spawn(client.start)
     # eventlet.spawn(main)

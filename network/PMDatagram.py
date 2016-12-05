@@ -1,9 +1,10 @@
 import json
 
+import pub_config as pc
+from pub_config import FIELDS as fd
 import network.config as config
 import network.connect as connect
 from network.util import *
-
 
 
 class PMDatagram:
@@ -34,7 +35,9 @@ class PMDatagram:
         return self.msg
 
     @exception_log
-    def send_msg(self, conn):
+    def send_msg(self, conn, msg=None):
+        if msg is None:
+            msg = self.msg
         byte_msg = len(self.msg).to_bytes(config.HEADER_LEN, config.ENDIAN) + bytes(self.msg, "utf-8")
         connect.write_conn(conn, byte_msg)
 
@@ -45,7 +48,7 @@ class PMDatagram:
     @exception_log
     def send_json(self, conn, dict_data):
         msg = self.json_decoder.encode(dict_data)
-        self.send_msg(msg)
+        self.send_msg(conn, msg)
 
     @exception_log
     def send_msg_all(self, conn):
@@ -56,3 +59,41 @@ class PMDatagram:
     def get_raw_msg(self):
         return self.msg
 
+    """Refer to pub_config to read about groups data specifications
+        [(group_id, name, n_members), ]
+    """
+    @exception_log
+    def require_groups(self, conn):
+        d = {
+            fd[0]: pc.GET_GROUPS,
+            fd[1]: -1,
+            fd[2]: -1,
+        }
+        self.send_json(conn, d)
+
+    @exception_log
+    def send_groups(self, conn, tuple_list):
+        d = {
+            fd[0]: pc.RETURN_GROUPS,
+            fd[1]: -1,
+            fd[2]: -1,
+            fd["l"]: tuple_list,
+        }
+        self.send_json(conn, d)
+
+    @exception_log
+    def parse_groups(self, d):
+        if d[fd[0]] != pc.RETURN_GROUPS:
+            raise PMTypeException()
+        l = d.get(fd["l"])
+        if l is None:
+            raise PMDataException()
+        return l
+
+
+class PMTypeException(Exception):
+    pass
+
+
+class PMDataException(Exception):
+    pass

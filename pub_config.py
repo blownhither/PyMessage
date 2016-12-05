@@ -17,6 +17,11 @@ FIELDS = {
     "Text": "x", "x": "x", 4: "x",
     "FileName": "f", "f": "f",
     "FileText": "ft", "ft": "ft",
+    "List": "l", "l": "l",
 
     # set to -1 when invalid but necessary
 }
+
+"""
+    2. In RETURN_GROUPS mode, List field will be [(group_id, name, n_members), ]
+"""

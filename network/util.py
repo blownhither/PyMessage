@@ -1,5 +1,7 @@
 import logging
 import socket
+import time
+import network.config as config
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
@@ -33,3 +35,11 @@ def exception_log(func):
 
 class NeedExitException(Exception):
     pass
+
+@exception_log
+def encode_timestamp():
+    return int(time.time() * 1000).to_bytes(config.TIME_LEN, config.ENDIAN)
+
+@exception_log
+def decode_timestamp(bytes_msg):
+    return int.from_bytes(bytes_msg, config.ENDIAN) / 1000.0

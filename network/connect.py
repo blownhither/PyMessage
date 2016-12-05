@@ -18,6 +18,7 @@ def read_conn_tuple(conn, length):
         except socket.timeout as e:
             eventlet.sleep(config.SLEEP)
         except ConnectionError as e:
+            print(str(eventlet.getcurrent()) + " exit")
             eventlet.kill(eventlet.getcurrent())
     return byte_msg, addr
 
@@ -30,8 +31,9 @@ def read_conn(conn, length):
 
 @exception_log
 def write_conn(conn, byte_msg):
-    conn.settimeout(config.TIMEOUT)
+    # conn.settimeout(config.TIMEOUT)
     try:
+        print("connect.write_conn : " + str(byte_msg))
         return conn.send(byte_msg)
     except ConnectionError as e:
         eventlet.kill(eventlet.getcurrent())

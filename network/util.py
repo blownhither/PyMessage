@@ -2,6 +2,7 @@ import logging
 import socket
 import time
 import network.config as config
+import eventlet
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
@@ -33,12 +34,27 @@ def exception_log(func):
             logger.exception(log_str)
     return logged_func
 
+
+def exit_on_error(func, exception_type):
+    def inner(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except exception_type as e:
+            error_str = "Exit on Exception " + str(exception_type) + "\n" + str(e)
+            print(error_str)
+            logging.error(error_str)
+            eventlet.kill(eventlet.getcurrent())
+            return None
+    return inner
+
 class NeedExitException(Exception):
     pass
+
 
 @exception_log
 def encode_timestamp():
     return int(time.time() * 1000).to_bytes(config.TIME_LEN, config.ENDIAN)
+
 
 @exception_log
 def decode_timestamp(bytes_msg):

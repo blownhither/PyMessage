@@ -47,7 +47,10 @@ class PMDatagram:
     def read_json(self, conn):
         raw_msg = self.read_raw_msg(conn)
         print("raw: " + raw_msg)
-        d = json.loads(raw_msg)
+        try:
+            d = json.loads(raw_msg)
+        except json.JSONDecodeError as e:
+            raise PMJSONException()
         print("dict: " + str(d))
         return d
 
@@ -105,5 +108,10 @@ class PMTypeException(Exception):
 class PMDataException(Exception):
     pass
 
+
 class PMEmptyDataException(Exception):
+    pass
+
+
+class PMJSONException(Exception):
     pass

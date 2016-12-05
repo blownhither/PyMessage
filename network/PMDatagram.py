@@ -28,30 +28,34 @@ class PMDatagram:
 
     """most function receive msg as str not bytes"""
     @exception_log
-    def read_msg(self, conn):
+    def read_raw_msg(self, conn):
         byte_len = connect.read_conn(conn, config.HEADER_LEN)
         self.msg_len = self.parse_len(byte_len)
         self.msg = str(connect.read_conn(conn, self.msg_len), "utf-8")
+        print("read_raw_msg : " + self.msg)
         return self.msg
 
     @exception_log
-    def send_msg(self, conn, msg=None):
+    def send_raw_msg(self, conn, msg=None):
         if msg is None:
             msg = self.msg
         byte_msg = len(msg).to_bytes(config.HEADER_LEN, config.ENDIAN) + bytes(msg, "utf-8")
         connect.write_conn(conn, byte_msg)
+        print("send_raw_msg : %s\n\t%s" % (msg, byte_msg))
 
     @exception_log
     def read_json(self, conn):
-        d = json.loads(self.read_msg(conn))
-        print(d)
+        raw_msg = self.read_raw_msg(conn)
+        print("raw: " + raw_msg)
+        d = json.loads(raw_msg)
+        print("dict: " + str(d))
         return d
 
     @exception_log
     def send_json(self, conn, dict_data):
         msg = self.json_decoder.encode(dict_data)
-        self.send_msg(conn, msg)
-        print(msg)
+        self.send_raw_msg(conn, msg)
+        print("json str : " + msg)
 
     @exception_log
     def send_msg_all(self, conn):
@@ -99,4 +103,7 @@ class PMTypeException(Exception):
 
 
 class PMDataException(Exception):
+    pass
+
+class PMEmptyDataException(Exception):
     pass

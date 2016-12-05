@@ -34,6 +34,8 @@ class Client(Thread):
         self.read_queue = []
         self.send_lock = mtp.Lock()
         self.read_lock = mtp.Lock()
+        self.group_info = None  # one slot, fetch and clear
+
         # self.thread_pool = eventlet.GreenPool(2)
         # self.thread_pool.spawn(self._read_routine)
         # self.thread_pool.spawn(self._send_routine)
@@ -53,11 +55,22 @@ class Client(Thread):
         while True:
             p = Pmd()
             print("Reading.. ")
-            msg = p.read_msg(self.server)
-            # TODO:
-            print("Server: " + msg)
+            d = p.read_json(self.server)
+            if d is None:
+                raise PMEmptyDataException()
+
+            # TODO: design
+
+            t = d.get(fd[0])
+            if t is not None and t == pc.RETURN_GROUPS:
+                l = d.get(fd["l"])
+                self.group_info = l
+                print("Group info : " + str(l))
+                continue
+
+            print("Server: " + d)
             self.read_lock.acquire()
-            self.read_queue.append(msg)
+            self.read_queue.append(d)
             self.read_lock.release()
 
     def _send_routine(self):
@@ -67,7 +80,7 @@ class Client(Thread):
             print("%d Left" % len(self.send_queue))
             msg = self.send_queue.pop(0)
             p = Pmd(msg)
-            p.send_msg(self.server)
+            p.send_raw_msg(self.server)
             print("Sent")
 
     def put_msg(self, msg):
@@ -81,11 +94,16 @@ class Client(Thread):
         self.read_lock.release()
         return ret
 
-    # feedback will come through reader when PMD comes with type=GET_GROUPS
     def get_groups(self):
         p = Pmd()
         p.require_groups(self.server)
-
+        while True:
+            if self.group_info is None:
+                eventlet.sleep(config.TIMEOUT)
+            else:
+                l = self.group_info
+                self.group_info = None
+                return l
         # msg = p.read_msg(self.server)
         # flag = True
         # while flag:
@@ -105,10 +123,11 @@ if __name__ == "__main__":
     client = Client(8848)
     client.start()
 
-    client.get_groups()
-    client.get_groups()
-    client.get_groups()
-
+    print(client.get_groups())
+    print(client.get_groups())
+    # client.get_groups()
+    # client.get_groups()
+    #
     # while True:
         # client.put_msg(str(random.randint(1, 1000)))
 

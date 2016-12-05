@@ -26,8 +26,8 @@ class Group:
     def thread_routine(self, conn):
         data = Pmd()
         while True:
-            data.read_msg(conn)
-            self._thread_pool.imap(data.send_msg, self._conn_pool)
+            data.read_raw_msg(conn)
+            self._thread_pool.imap(data.send_raw_msg, self._conn_pool)
 
     def add_conn(self, conn):
         self._conn_pool.append(conn)

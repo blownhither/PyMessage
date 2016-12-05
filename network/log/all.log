@@ -1,92 +1,13 @@
-Mon, 05 Dec 2016 10:18:59 util.py[line:33] ERROR 
+Mon, 05 Dec 2016 11:18:09 util.py[line:33] ERROR 
 
 network.util
-read_conn_tuple ( (<socket.socket fd=4, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>, 4), {} )
-[Errno 57] Socket is not connected
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/connect.py", line 17, in read_conn_tuple
-    byte_msg, addr = conn.recvfrom(length)
-OSError: [Errno 57] Socket is not connected
-Mon, 05 Dec 2016 10:18:59 util.py[line:33] ERROR 
-
-network.util
-read_conn ( (<socket.socket fd=4, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>, 4), {} )
-'NoneType' object is not iterable
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/connect.py", line 27, in read_conn
-    byte_msg, addr = read_conn_tuple(conn, length)
-TypeError: 'NoneType' object is not iterable
-Mon, 05 Dec 2016 10:18:59 util.py[line:33] ERROR 
-
-network.util
-parse_len ( (None,), {} )
-'NoneType' object is not subscriptable
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 24, in parse_len
-    msg_len = int.from_bytes(byte_msg[: config.HEADER_LEN], config.ENDIAN)
-TypeError: 'NoneType' object is not subscriptable
-Mon, 05 Dec 2016 10:18:59 util.py[line:33] ERROR 
-
-network.util
-read_conn_tuple ( (<socket.socket fd=4, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>, None), {} )
-'NoneType' object cannot be interpreted as an integer
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/connect.py", line 17, in read_conn_tuple
-    byte_msg, addr = conn.recvfrom(length)
-TypeError: 'NoneType' object cannot be interpreted as an integer
-Mon, 05 Dec 2016 10:18:59 util.py[line:33] ERROR 
-
-network.util
-read_conn ( (<socket.socket fd=4, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>, None), {} )
-'NoneType' object is not iterable
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/connect.py", line 27, in read_conn
-    byte_msg, addr = read_conn_tuple(conn, length)
-TypeError: 'NoneType' object is not iterable
-Mon, 05 Dec 2016 10:18:59 util.py[line:33] ERROR 
-
-network.util
-read_msg ( (<network.PMDatagram.PMDatagram object at 0x171f14c>, <socket.socket fd=4, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>), {} )
-coercing to str: need a bytes-like object, NoneType found
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 34, in read_msg
-    self.msg = str(connect.read_conn(conn, self.msg_len), "utf-8")
-TypeError: coercing to str: need a bytes-like object, NoneType found
-Mon, 05 Dec 2016 10:18:59 util.py[line:33] ERROR 
-
-network.util
-read_json ( (<network.PMDatagram.PMDatagram object at 0x171f14c>, <socket.socket fd=4, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888)>), {} )
-the JSON object must be str, not 'NoneType'
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
-    return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 46, in read_json
-    d = json.loads(self.read_msg(conn))
-  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/__init__.py", line 312, in loads
-    s.__class__.__name__))
-TypeError: the JSON object must be str, not 'NoneType'
-Mon, 05 Dec 2016 10:21:03 util.py[line:33] ERROR 
-
-network.util
-read_json ( (<network.PMDatagram.PMDatagram object at 0x1ef9e2c>, <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 57101)>), {} )
+read_json ( (<network.PMDatagram.PMDatagram object at 0x179f62c>, <socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 57689), raddr=('127.0.0.1', 8888)>), {} )
 Expecting value: line 1 column 1 (char 0)
 Traceback (most recent call last):
   File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
     return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 46, in read_json
-    d = json.loads(self.read_msg(conn))
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 48, in read_json
+    d = json.loads(raw_msg)
   File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/__init__.py", line 319, in loads
     return _default_decoder.decode(s)
   File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 339, in decode
@@ -94,16 +15,16 @@ Traceback (most recent call last):
   File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 357, in raw_decode
     raise JSONDecodeError("Expecting value", s, err.value) from None
 json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-Mon, 05 Dec 2016 10:21:05 util.py[line:33] ERROR 
+Mon, 05 Dec 2016 11:20:19 util.py[line:33] ERROR 
 
 network.util
-read_json ( (<network.PMDatagram.PMDatagram object at 0x1ef9e2c>, <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 57103)>), {} )
+read_json ( (<network.PMDatagram.PMDatagram object at 0x172baec>, <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 57689)>), {} )
 Expecting value: line 1 column 1 (char 0)
 Traceback (most recent call last):
   File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
     return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 46, in read_json
-    d = json.loads(self.read_msg(conn))
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 48, in read_json
+    d = json.loads(raw_msg)
   File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/__init__.py", line 319, in loads
     return _default_decoder.decode(s)
   File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 339, in decode
@@ -111,16 +32,16 @@ Traceback (most recent call last):
   File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 357, in raw_decode
     raise JSONDecodeError("Expecting value", s, err.value) from None
 json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-Mon, 05 Dec 2016 10:22:48 util.py[line:33] ERROR 
+Mon, 05 Dec 2016 11:25:55 util.py[line:33] ERROR 
 
 network.util
-read_json ( (<network.PMDatagram.PMDatagram object at 0x33b85ec>, <socket.socket fd=9, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 57126)>), {} )
+read_json ( (<network.PMDatagram.PMDatagram object at 0x1f2baec>, <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 57750)>), {} )
 Expecting value: line 1 column 1 (char 0)
 Traceback (most recent call last):
   File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
     return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 46, in read_json
-    d = json.loads(self.read_msg(conn))
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 48, in read_json
+    print("raw: " + raw_msg)
   File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/__init__.py", line 319, in loads
     return _default_decoder.decode(s)
   File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 339, in decode
@@ -128,16 +49,16 @@ Traceback (most recent call last):
   File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 357, in raw_decode
     raise JSONDecodeError("Expecting value", s, err.value) from None
 json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-Mon, 05 Dec 2016 10:23:27 util.py[line:33] ERROR 
+Mon, 05 Dec 2016 11:26:02 util.py[line:33] ERROR 
 
 network.util
-read_json ( (<network.PMDatagram.PMDatagram object at 0x33c248c>, <socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 57133)>), {} )
+read_json ( (<network.PMDatagram.PMDatagram object at 0x179974c>, <socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 57774), raddr=('127.0.0.1', 8888)>), {} )
 Expecting value: line 1 column 1 (char 0)
 Traceback (most recent call last):
   File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
     return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 46, in read_json
-    d = json.loads(self.read_msg(conn))
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 49, in read_json
+    d = json.loads(raw_msg)
   File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/__init__.py", line 319, in loads
     return _default_decoder.decode(s)
   File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 339, in decode
@@ -145,16 +66,16 @@ Traceback (most recent call last):
   File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 357, in raw_decode
     raise JSONDecodeError("Expecting value", s, err.value) from None
 json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-Mon, 05 Dec 2016 10:24:40 util.py[line:33] ERROR 
+Mon, 05 Dec 2016 11:26:34 util.py[line:33] ERROR 
 
 network.util
-read_json ( (<network.PMDatagram.PMDatagram object at 0x1ef6e2c>, <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 57136)>), {} )
+read_json ( (<network.PMDatagram.PMDatagram object at 0x1f2eacc>, <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 57774)>), {} )
 Expecting value: line 1 column 1 (char 0)
 Traceback (most recent call last):
   File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
     return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 46, in read_json
-    d = json.loads(self.read_msg(conn))
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 49, in read_json
+    d = json.loads(raw_msg)
   File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/__init__.py", line 319, in loads
     return _default_decoder.decode(s)
   File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 339, in decode
@@ -162,70 +83,16 @@ Traceback (most recent call last):
   File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 357, in raw_decode
     raise JSONDecodeError("Expecting value", s, err.value) from None
 json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-Mon, 05 Dec 2016 10:24:40 util.py[line:33] ERROR 
+Mon, 05 Dec 2016 11:26:35 util.py[line:33] ERROR 
 
 network.util
-send_groups ( (<network.PMDatagram.PMDatagram object at 0x1ef6e2c>, [(1312, 'Temporary Group', 0), (3215, 'Temporary Group', 0)]), {} )
-send_groups() missing 1 required positional argument: 'tuple_list'
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
-    return func(*args, **kwargs)
-TypeError: send_groups() missing 1 required positional argument: 'tuple_list'
-Mon, 05 Dec 2016 10:24:40 util.py[line:33] ERROR 
-
-network.util
-send_groups ( (<network.PMDatagram.PMDatagram object at 0x1ef6e2c>, [(1312, 'Temporary Group', 0), (3215, 'Temporary Group', 0)]), {} )
-send_groups() missing 1 required positional argument: 'tuple_list'
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
-    return func(*args, **kwargs)
-TypeError: send_groups() missing 1 required positional argument: 'tuple_list'
-Mon, 05 Dec 2016 10:24:40 util.py[line:33] ERROR 
-
-network.util
-send_groups ( (<network.PMDatagram.PMDatagram object at 0x1ef6e2c>, [(1312, 'Temporary Group', 0), (3215, 'Temporary Group', 0)]), {} )
-send_groups() missing 1 required positional argument: 'tuple_list'
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
-    return func(*args, **kwargs)
-TypeError: send_groups() missing 1 required positional argument: 'tuple_list'
-Mon, 05 Dec 2016 10:25:08 util.py[line:33] ERROR 
-
-network.util
-send_groups ( (<network.PMDatagram.PMDatagram object at 0xefc90c>, [(1312, 'Temporary Group', 0), (3215, 'Temporary Group', 0)]), {} )
-send_groups() missing 1 required positional argument: 'tuple_list'
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
-    return func(*args, **kwargs)
-TypeError: send_groups() missing 1 required positional argument: 'tuple_list'
-Mon, 05 Dec 2016 10:25:08 util.py[line:33] ERROR 
-
-network.util
-send_groups ( (<network.PMDatagram.PMDatagram object at 0xefc90c>, [(1312, 'Temporary Group', 0), (3215, 'Temporary Group', 0)]), {} )
-send_groups() missing 1 required positional argument: 'tuple_list'
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
-    return func(*args, **kwargs)
-TypeError: send_groups() missing 1 required positional argument: 'tuple_list'
-Mon, 05 Dec 2016 10:25:08 util.py[line:33] ERROR 
-
-network.util
-send_groups ( (<network.PMDatagram.PMDatagram object at 0xefc90c>, [(1312, 'Temporary Group', 0), (3215, 'Temporary Group', 0)]), {} )
-send_groups() missing 1 required positional argument: 'tuple_list'
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
-    return func(*args, **kwargs)
-TypeError: send_groups() missing 1 required positional argument: 'tuple_list'
-Mon, 05 Dec 2016 10:32:13 util.py[line:33] ERROR 
-
-network.util
-read_json ( (<network.PMDatagram.PMDatagram object at 0x1f2ea4c>, <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 57183)>), {} )
+read_json ( (<network.PMDatagram.PMDatagram object at 0x1f997ac>, <socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 57776), raddr=('127.0.0.1', 8888)>), {} )
 Expecting value: line 1 column 1 (char 0)
 Traceback (most recent call last):
   File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
     return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 46, in read_json
-    d = json.loads(self.read_msg(conn))
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 49, in read_json
+    d = json.loads(raw_msg)
   File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/__init__.py", line 319, in loads
     return _default_decoder.decode(s)
   File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 339, in decode
@@ -233,16 +100,101 @@ Traceback (most recent call last):
   File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 357, in raw_decode
     raise JSONDecodeError("Expecting value", s, err.value) from None
 json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-Mon, 05 Dec 2016 10:32:31 util.py[line:33] ERROR 
+Mon, 05 Dec 2016 11:26:37 util.py[line:33] ERROR 
 
 network.util
-read_json ( (<network.PMDatagram.PMDatagram object at 0x1f2e52c>, <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 57192)>), {} )
+read_json ( (<network.PMDatagram.PMDatagram object at 0x1f341cc>, <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 57776)>), {} )
 Expecting value: line 1 column 1 (char 0)
 Traceback (most recent call last):
   File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
     return func(*args, **kwargs)
-  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 46, in read_json
-    d = json.loads(self.read_msg(conn))
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 49, in read_json
+    d = json.loads(raw_msg)
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Mon, 05 Dec 2016 11:26:38 util.py[line:33] ERROR 
+
+network.util
+read_json ( (<network.PMDatagram.PMDatagram object at 0x1f9956c>, <socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 57777), raddr=('127.0.0.1', 8888)>), {} )
+Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 49, in read_json
+    d = json.loads(raw_msg)
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Mon, 05 Dec 2016 11:28:03 util.py[line:33] ERROR 
+
+network.util
+read_json ( (<network.PMDatagram.PMDatagram object at 0x1f998ac>, <socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 57777), raddr=('127.0.0.1', 8888)>), {} )
+Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 49, in read_json
+    print("raw: " + raw_msg)
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Mon, 05 Dec 2016 11:28:07 util.py[line:33] ERROR 
+
+network.util
+read_json ( (<network.PMDatagram.PMDatagram object at 0x1f9c4ac>, <socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 57789), raddr=('127.0.0.1', 8888)>), {} )
+Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 50, in read_json
+    d = json.loads(raw_msg)
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Mon, 05 Dec 2016 11:30:20 util.py[line:33] ERROR 
+
+network.util
+read_json ( (<network.PMDatagram.PMDatagram object at 0x1f2f58c>, <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 57789)>), {} )
+Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 50, in read_json
+    d = json.loads(raw_msg)
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Mon, 05 Dec 2016 11:30:44 util.py[line:33] ERROR 
+
+network.util
+read_json ( (<network.PMDatagram.PMDatagram object at 0x1ef698c>, <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 57802)>), {} )
+Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 29, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 50, in read_json
+    d = json.loads(raw_msg)
   File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/__init__.py", line 319, in loads
     return _default_decoder.decode(s)
   File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 339, in decode

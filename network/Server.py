@@ -30,7 +30,7 @@ class Server(Thread):
     """Those who are connected and not yet in any group"""
     def _handle_idle(self, conn):
         p = Pmd()
-        print("Spawned")
+        print("_handle_idle")
         while True:
             d = p.read_json(conn)
             print(d)

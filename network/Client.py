@@ -40,8 +40,8 @@ class Client(Thread):
         # self.thread_pool.spawn(self._read_routine)
         # self.thread_pool.spawn(self._send_routine)
 
-        self.read_thread = eventlet.spawn(self._read_routine)
-        self.send_thread = eventlet.spawn(self._send_routine)
+        # self.read_thread = eventlet.spawn(self._read_routine)
+        # self.send_thread = eventlet.spawn(self._send_routine)
 
     """override Thread.run"""
     def run(self):

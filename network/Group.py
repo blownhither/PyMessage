@@ -36,8 +36,7 @@ class Group:
 
     def add_user(self, conn, user_id, user_name, user_desc=None):
         try:
-            self._users.add_user(conn, user_id, user_name, user_desc)
-            return True
+            return self._users.add_user(conn, user_id, user_name, user_desc)
         except Exception as e:
             log_str = "Adding user %d(%s) failed\n%s\n" % (user_id, user_name, str(e))
             print(log_str)
@@ -66,13 +65,19 @@ class Users:
         self._all_users = {}
 
     def add_user(self, conn, user_id, user_name=None, user_desc=None):
-        if user_id in self._all_users.keys():
-            raise InvalidUserIDException()
+        if user_id in self._all_users.keys():   # having joined
+            log_str = "User %d(%s) trying to join a group again" % (user_id, user_name)
+            logging.warning(log_str)
+            t = self._all_users[user_id]
+            if t[0] != conn:    # same ID, diff conn
+                return False
+            # still be able to add, can be used as rename
         if user_name is None:
             user_name = str(user_id)
         if user_desc is None:
             user_desc = str(user_id)
         self._all_users[user_id] = (conn, user_name, user_desc)
+        return True
 
     def remove_user(self, user_id):
         if user_id not in self._all_users.keys():

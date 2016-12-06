@@ -1,7 +1,7 @@
-Tue, 06 Dec 2016 16:43:12 util.py[line:35] ERROR 
+Tue, 06 Dec 2016 19:15:50 util.py[line:35] ERROR 
 
 network.util
-read_json ( (<network.PMDatagram.PMDatagram object at 0x25a052c>, <socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 59308), raddr=('127.0.0.1', 8888)>), {} )
+read_json ( (<network.PMDatagram.PMDatagram object at 0x2d9d62c>, <socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61904), raddr=('127.0.0.1', 8888)>), {} )
 Traceback (most recent call last):
   File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 56, in read_json
     d = json.loads(raw_msg)
@@ -21,12 +21,20 @@ Traceback (most recent call last):
   File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 58, in read_json
     raise PMJSONException()
 network.PMDatagram.PMJSONException
-Tue, 06 Dec 2016 16:43:18 Server.py[line:63] INFO 8848(mzy) joined group 8848
-Tue, 06 Dec 2016 16:43:18 Client.py[line:111] INFO put buffer (type=9)8848
-Tue, 06 Dec 2016 16:43:28 util.py[line:35] ERROR 
+Tue, 06 Dec 2016 19:15:50 Client.py[line:76] ERROR [Errno 61] Connection refused
+Unable to reach server
+Tue, 06 Dec 2016 19:15:53 Server.py[line:75] INFO 8848(mzy) request for joining group 8848 rejected 
+Tue, 06 Dec 2016 19:15:53 Client.py[line:129] INFO put buffer (type=9)-1
+Tue, 06 Dec 2016 19:15:53 Client.py[line:195] ERROR Unmatched joining group 8848 feedback, unimplemented async? 
+Tue, 06 Dec 2016 19:15:53 Group.py[line:70] WARNING User 8848(mzy2) trying to join a group again
+Tue, 06 Dec 2016 19:15:53 Server.py[line:75] INFO 8848(mzy2) request for joining group 8848 rejected 
+Tue, 06 Dec 2016 19:15:53 Client.py[line:129] INFO put buffer (type=9)-1
+Tue, 06 Dec 2016 19:15:53 Client.py[line:195] ERROR Unmatched joining group 8848 feedback, unimplemented async? 
+Tue, 06 Dec 2016 19:15:53 Client.py[line:129] INFO put buffer (type=6)[[8848, 'mzy2', '8848']]
+Tue, 06 Dec 2016 19:17:44 util.py[line:35] ERROR 
 
 network.util
-read_json ( (<network.PMDatagram.PMDatagram object at 0x15327ac>, <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 59313)>), {} )
+read_json ( (<network.PMDatagram.PMDatagram object at 0x2d9d8ec>, <socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61918), raddr=('127.0.0.1', 8888)>), {} )
 Traceback (most recent call last):
   File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 56, in read_json
     d = json.loads(raw_msg)
@@ -46,18 +54,15 @@ Traceback (most recent call last):
   File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 58, in read_json
     raise PMJSONException()
 network.PMDatagram.PMJSONException
-Tue, 06 Dec 2016 16:43:29 Group.py[line:44] ERROR Adding user 8848(mzy) failed
-
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/Group.py", line 39, in add_user
-    self._users.add_user(conn, user_id, user_name, user_desc)
-  File "/Users/bh/projects/python/pyMessage/network/Group.py", line 70, in add_user
-    raise InvalidUserIDException()
-network.Group.InvalidUserIDException
-Tue, 06 Dec 2016 16:43:31 util.py[line:35] ERROR 
+Tue, 06 Dec 2016 19:17:44 Client.py[line:76] ERROR [Errno 61] Connection refused
+Unable to reach server
+Tue, 06 Dec 2016 19:17:45 Client.py[line:76] ERROR [Errno 61] Connection refused
+Unable to reach server
+Tue, 06 Dec 2016 19:18:05 Server.py[line:75] INFO 8848(mzy) request for joining group 8848 rejected 
+Tue, 06 Dec 2016 19:18:45 util.py[line:35] ERROR 
 
 network.util
-read_json ( (<network.PMDatagram.PMDatagram object at 0x153272c>, <socket.socket fd=7, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 59314)>), {} )
+read_json ( (<network.PMDatagram.PMDatagram object at 0x259d64c>, <socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 61937), raddr=('127.0.0.1', 8888)>), {} )
 Traceback (most recent call last):
   File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 56, in read_json
     d = json.loads(raw_msg)
@@ -77,18 +82,28 @@ Traceback (most recent call last):
   File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 58, in read_json
     raise PMJSONException()
 network.PMDatagram.PMJSONException
-Tue, 06 Dec 2016 16:43:32 Group.py[line:44] ERROR Adding user 8848(mzy) failed
-
-Traceback (most recent call last):
-  File "/Users/bh/projects/python/pyMessage/network/Group.py", line 39, in add_user
-    self._users.add_user(conn, user_id, user_name, user_desc)
-  File "/Users/bh/projects/python/pyMessage/network/Group.py", line 70, in add_user
-    raise InvalidUserIDException()
-network.Group.InvalidUserIDException
-Tue, 06 Dec 2016 16:43:34 util.py[line:35] ERROR 
+Tue, 06 Dec 2016 19:18:45 Client.py[line:76] ERROR [Errno 61] Connection refused
+Unable to reach server
+Tue, 06 Dec 2016 19:18:46 Client.py[line:76] ERROR [Errno 61] Connection refused
+Unable to reach server
+Tue, 06 Dec 2016 19:18:47 Client.py[line:76] ERROR [Errno 61] Connection refused
+Unable to reach server
+Tue, 06 Dec 2016 19:18:48 Client.py[line:76] ERROR [Errno 61] Connection refused
+Unable to reach server
+Tue, 06 Dec 2016 19:18:51 Server.py[line:70] INFO 8848(mzy) joined group 8848
+Tue, 06 Dec 2016 19:18:51 util.py[line:35] ERROR 
 
 network.util
-read_json ( (<network.PMDatagram.PMDatagram object at 0x15327ac>, <socket.socket fd=7, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 59315)>), {} )
+confirm_join_group ( (<network.PMDatagram.PMDatagram object at 0x253080c>, <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 61946)>, 8848, 'mzy'), {'success': True} )
+confirm_join_group() got an unexpected keyword argument 'success'
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 30, in logged_func
+    return func(*args, **kwargs)
+TypeError: confirm_join_group() got an unexpected keyword argument 'success'
+Tue, 06 Dec 2016 19:19:37 util.py[line:35] ERROR 
+
+network.util
+read_json ( (<network.PMDatagram.PMDatagram object at 0x253080c>, <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 61946)>), {} )
 Traceback (most recent call last):
   File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 56, in read_json
     d = json.loads(raw_msg)
@@ -108,3 +123,10 @@ Traceback (most recent call last):
   File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 58, in read_json
     raise PMJSONException()
 network.PMDatagram.PMJSONException
+Tue, 06 Dec 2016 19:19:37 Server.py[line:42] ERROR Conn <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 61946)> closing, threads exit 
+Tue, 06 Dec 2016 19:19:39 Server.py[line:70] INFO 8848(mzy) joined group 8848
+Tue, 06 Dec 2016 19:19:39 Client.py[line:129] INFO put buffer (type=9)8848
+Tue, 06 Dec 2016 19:19:39 Group.py[line:70] WARNING User 8848(mzy2) trying to join a group again
+Tue, 06 Dec 2016 19:19:39 Server.py[line:70] INFO 8848(mzy2) joined group 8848
+Tue, 06 Dec 2016 19:19:39 Client.py[line:129] INFO put buffer (type=9)8848
+Tue, 06 Dec 2016 19:19:39 Client.py[line:129] INFO put buffer (type=6)[[8848, 'mzy2', '8848']]

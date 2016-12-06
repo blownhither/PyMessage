@@ -48,6 +48,7 @@ def exit_on_error(func, exception_type):
             return None
     return inner
 
+
 class NeedExitException(Exception):
     pass
 
@@ -60,3 +61,7 @@ def encode_timestamp():
 @exception_log
 def decode_timestamp(bytes_msg):
     return int.from_bytes(bytes_msg, config.ENDIAN) / 1000.0
+
+
+def dprint(*args):
+    print(*args, flush=True)

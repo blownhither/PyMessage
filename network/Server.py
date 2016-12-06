@@ -22,7 +22,7 @@ class Server(Thread):
         self._server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self._server.bind((config.HOST, config.PORT))
         self._server.listen(config.MAX)
-        print("Connected")
+        dprint("Connected")
 
     def run(self):
         self._main_thread = eventlet.spawn(self._accept_any)
@@ -31,10 +31,17 @@ class Server(Thread):
     """Those who are connected and not yet in any group"""
     def _handle_any(self, conn):
         p = Pmd()
-        print("_handle_idle")
+        dprint("_handle_idle")
         while True:
             d = p.read_json(conn)
-            print(d)
+            dprint(d)
+            if d is None:       # TODO: must be error and need exit ?
+                log_str = "Conn %s closing, threads exit " % str(conn)
+                dprint(log_str)
+                conn.close()
+                logging.error(log_str)
+                eventlet.kill(eventlet.getcurrent())
+
             t = d.get(fd[0])
             if t is not None:
                 if t == pc.GET_GROUPS:
@@ -61,16 +68,18 @@ class Server(Thread):
                     if success:
                         log_str = "%d(%s) joined group %d" % (user_id, alias, group_id)
                         logging.info(log_str)
-                        print(log_str)
+                        dprint(log_str)
                         p.confirm_join_group(conn, group_id, alias)
                     else:
-                        pass
-                        # TODO: unimplemented: name collision (nor back- or front-end)
+                        log_str = "%d(%s) request for joining group %d rejected " % (user_id, alias, group_id)
+                        logging.info(log_str)
+                        dprint(log_str)
+                        p.confirm_join_group(conn, -1, "")       # send -1 as group_id
                     continue
 
                 else:
                     log_str = " Unrecognized frame type " + str(t)
-                    print(log_str)
+                    dprint(log_str)
                     logging.warning(log_str)
                     continue
 
@@ -79,7 +88,7 @@ class Server(Thread):
         group = self._group_pool.get(group_id)
         if group_id is None or group is None:
             warning_str = str(conn) + "Attempt to join invalid group " + str(group_id)
-            print(warning_str)
+            dprint(warning_str)
             logging.warning(warning_str)
             return False
         return group.add_user(conn=conn, user_id=user_id, user_name=alias)
@@ -91,7 +100,7 @@ class Server(Thread):
     def _add_group(self, group_id, name="Temporary Group", desc=""):
         if self._group_pool.get(group_id) is not None:
             warning_str = "Re-create group_id / groupId collision on " + str(group_id)
-            print(warning_str)
+            dprint(warning_str)
             logging.warning(warning_str)
             return False
         g = Group(group_id=group_id, desc=desc, name=name)
@@ -107,7 +116,7 @@ class Server(Thread):
         g = self._group_pool.get(int(group_id))
         if g is None:
             warning_str = "Get users from invalid group ID " + str(group_id)
-            print(warning_str)
+            dprint(warning_str)
             logging.warning(warning_str)
             return None
         return g.user_list()
@@ -124,7 +133,7 @@ class Server(Thread):
                     eventlet.sleep(config.TIMEOUT)
                     # conn, address = server.accept()
                     # handle(conn)
-            print("Accepted" + str(address))
+            dprint("Accepted" + str(address))
             eventlet.spawn_n(self._handle_any, conn)
 
 

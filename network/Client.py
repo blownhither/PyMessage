@@ -27,9 +27,8 @@ class Client(Thread):
     def __init__(self, user_id):
         Thread.__init__(self)
         self.user_id = user_id
-        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.connect((config.CLIENT_HOST, config.PORT))
-        print("Connected")
+        self.server = None
+        self._connect()
         self.send_queue = []
         self.read_queue = []
         self.send_lock = mtp.Lock()
@@ -60,15 +59,34 @@ class Client(Thread):
         read_thread.wait()
         # self.thread_pool.waitall()
 
+    def _connect(self):
+        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server.connect((config.CLIENT_HOST, config.PORT))
+        print("Connected")
+
+    def _reconnect(self):
+        if self.server is not None:
+            self.server.close()
+        while True:
+            try:
+                self._connect()  # try to reconnect
+            except Exception as e:
+                log_str = str(e) + "\nUnable to reach server"
+                dprint(log_str)
+                logging.error(log_str)
+                time.sleep(config.LONG_TIMEOUT)
+
     def _read_routine(self):
         while True:
             p = Pmd()
-            print("Reading.. ")
+            dprint("Reading.. ")
             d = p.read_json(self.server)
             if d is None:
-                raise PMEmptyDataException()
-
-            # TODO: design
+                # raise PMEmptyDataException()
+                log_str = "Conn %s closing, threads exit " % str(self.server)
+                dprint(log_str)
+                self._reconnect()
+                continue
 
             t = d.get(fd[0])
             if t is None:
@@ -79,7 +97,7 @@ class Client(Thread):
                     logging.warning("Corrupted RETURN_GROUPS frame without 'l' field")
                     continue
                 self._put_buffer(l, pc.RETURN_GROUPS)
-                print("put Group info : " + str(l))
+                dprint("put Group info : " + str(l))
                 continue
 
             elif t == pc.RETURN_GROUP_MEMBERS:
@@ -88,16 +106,16 @@ class Client(Thread):
                     logging.warning("Corrupted RETURN_GROUP_MEMBERS frame without 'l' field")
                     continue
                 self._put_buffer(l, pc.RETURN_GROUP_MEMBERS)
-                print("Put Group members : " + str(l))
+                dprint("Put Group members : " + str(l))
                 continue
 
             elif t == pc.CONFIRM_JOIN_GROUP:
                 group_id = d.get(fd["g"])
                 self._put_buffer(group_id, pc.CONFIRM_JOIN_GROUP)
-                print("Confirm joined group " + str(group_id))
+                dprint("Confirm joined group " + str(group_id))
                 continue
 
-            print("Server: " + d)
+            dprint("Server: " + d)
             self.read_lock.acquire()
             self.read_queue.append(d)
             self.read_lock.release()
@@ -128,18 +146,18 @@ class Client(Thread):
         self.buffer_type = None
         self.buffer_event.clear()
         self.buffer_lock.release()
-        print("Fetched " + str(l))
+        dprint("Fetched " + str(l))
         return l
 
     def _send_routine(self):
         while True:
             while len(self.send_queue) == 0:
                 eventlet.sleep(config.SLEEP)
-            print("%d Left" % len(self.send_queue))
+            dprint("%d Left" % len(self.send_queue))
             msg = self.send_queue.pop(0)
             p = Pmd(msg)
             p.send_raw_msg(self.server)
-            print("Sent")
+            dprint("Sent")
 
     def put_msg(self, msg):
         self.send_lock.acquire()
@@ -173,7 +191,7 @@ class Client(Thread):
                 return True
             else:
                 log_str = "Unmatched joining group %d feedback, unimplemented async? " % group_id
-                print(log_str)
+                dprint(log_str)
                 logging.error(log_str)
                 return False            # Temporary
 
@@ -185,7 +203,8 @@ if __name__ == "__main__":
     # print(client.get_groups())
     # print(client.get_group_members(8848))
     print(client.join_group(8848, "mzy"))
-    print(client.join_group(8848, "mzy"))
+    print(client.join_group(8848, "mzy2"))
+    print(client.get_group_members(8848))
     # client.get_groups()
     # client.get_groups()
     #

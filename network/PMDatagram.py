@@ -37,7 +37,7 @@ class PMDatagram:
         byte_len = connect.read_conn(conn, config.HEADER_LEN)
         self.msg_len = self.parse_len(byte_len)
         self.msg = str(connect.read_conn(conn, self.msg_len), "utf-8")
-        print("read_raw_msg : " + self.msg)
+        # dprint("read_raw_msg : " + self.msg)
         return self.msg
 
     @exception_log
@@ -46,17 +46,17 @@ class PMDatagram:
             msg = self.msg
         byte_msg = len(msg).to_bytes(config.HEADER_LEN, config.ENDIAN) + bytes(msg, "utf-8")
         connect.write_conn(conn, byte_msg)
-        print("send_raw_msg : %s\n\t%s" % (msg, byte_msg))
+        # dprint("send_raw_msg : %s\n\t%s" % (msg, byte_msg))
 
     @exception_log
     def read_json(self, conn):
         raw_msg = self.read_raw_msg(conn)
-        print("raw: " + raw_msg)
+        # dprint("raw: " + raw_msg)
         try:
             d = json.loads(raw_msg)
         except json.JSONDecodeError as e:
             raise PMJSONException()
-        print("dict: " + str(d))
+        # dprint("dict: " + str(d))
         return d
 
     @exception_log
@@ -65,7 +65,7 @@ class PMDatagram:
             dict_data = self.data
         msg = self.json_decoder.encode(dict_data)
         self.send_raw_msg(conn, msg)
-        print("json str : " + msg)
+        # dprint("json str : " + msg)
 
     @exception_log
     def send_msg_all(self, conn):

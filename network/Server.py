@@ -13,7 +13,7 @@ from pub_config import FIELDS as fd
 class Server(Thread):
     def __init__(self):
         Thread.__init__(self)
-        self._group_pool = {}
+        self._group_pool = {}   # [group_id] => aGroup
         # self._idle_pool = {}
         self._main_thread = None
 
@@ -51,7 +51,6 @@ class Server(Thread):
                         if l is not None:
                             p.send_group_members(conn, group_id, l)
 
-
     """ with parameter check """
     def join_group(self, group_id, conn):
         group = self._group_pool.get(group_id)
@@ -61,6 +60,9 @@ class Server(Thread):
             logging.warning(warning_str)
             return False
         group.add_conn(conn)
+
+    def add_group(self, group_id):
+        self._add_group(group_id)
 
     # Throws Exception
     def _add_group(self, group_id, name="Temporary Group", desc=""):
@@ -75,7 +77,7 @@ class Server(Thread):
 
     """ Format [(group_id, name, n_members), ... ]"""
     def get_group_info(self):
-        return [x.group_info() for x in self._group_pool]
+        return [x.group_info() for x in self._group_pool.values()]
 
     """ Format [(user_id, user_name, user_desc), ... ]"""
     def get_group_members(self, group_id):
@@ -106,7 +108,9 @@ class Server(Thread):
 if __name__ == "__main__":
     s = Server()
     s.start()
-
+    s.add_group(8848)
+    s.add_group(7737)
+    s.add_group(6626)
     print(s.get_group_info())
 
 

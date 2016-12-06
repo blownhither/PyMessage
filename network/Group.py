@@ -5,6 +5,7 @@ from network.util import *
 import pub_config as pc
 from pub_config import FIELDS as fd
 
+
 class Group:
     # _group_pool = {}
     server = None
@@ -18,7 +19,7 @@ class Group:
         self.desc = desc
         self.name = name
         self._users = Users()
-        self._broadcast_queue = []      # JSON Datagrams
+        self._broadcast_queue = []  # JSON Datagrams
         # Group._group_pool[group_id] = self._conn_pool
         self._thread_pool = eventlet.GreenPool(config.CONN_THREAD_NUM)
 
@@ -37,6 +38,7 @@ class Group:
         self._users.add_user(conn, user_id, user_name, user_desc)
 
     """ Format [(user_id, user_name, user_desc), ... ]"""
+
     def user_list(self):
         return self._users.all_users()
 
@@ -46,8 +48,6 @@ class Group:
     def conn_exit(self):
         # TODO:
         pass
-
-
 
 
 class Users:
@@ -81,6 +81,6 @@ class Users:
     def user_count(self):
         return len(self._all_users)
 
+
 class InvalidUserIDException(Exception):
     pass
-

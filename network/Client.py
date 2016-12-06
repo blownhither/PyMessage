@@ -5,7 +5,7 @@ import eventlet
 import socket
 import multiprocessing as mtp
 import random
-from threading import Thread
+from threading import Thread, Event
 import time
 
 import network.config as config
@@ -35,6 +35,7 @@ class Client(Thread):
         self.send_lock = mtp.Lock()
         self.read_lock = mtp.Lock()
         self.group_info = None  # one slot, fetch and clear
+        self.group_info_event = Event()
 
         # self.thread_pool = eventlet.GreenPool(2)
         # self.thread_pool.spawn(self._read_routine)
@@ -62,10 +63,13 @@ class Client(Thread):
             # TODO: design
 
             t = d.get(fd[0])
-            if t is not None and t == pc.RETURN_GROUPS:
+            if t is None:
+                continue
+            if t == pc.RETURN_GROUPS:
                 l = d.get(fd["l"])
                 self.group_info = l
                 print("Group info : " + str(l))
+                self.group_info_event.set()
                 continue
 
             print("Server: " + d)
@@ -99,7 +103,7 @@ class Client(Thread):
         p.require_groups(self.server)
         while True:
             if self.group_info is None:
-                eventlet.sleep(config.TIMEOUT)
+                self.group_info_event.wait(timeout=config.TIMEOUT)
             else:
                 l = self.group_info
                 self.group_info = None

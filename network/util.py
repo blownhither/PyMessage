@@ -31,6 +31,7 @@ def exception_log(func):
         except Exception as e:
             log_str = "\n\n%s\n%s ( %s, %s )\n%s" \
                       % (__name__, func.__name__, args, kwargs, str(e))
+            print(log_str)
             logger.exception(log_str)
     return logged_func
 

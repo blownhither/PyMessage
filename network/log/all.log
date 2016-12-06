@@ -1,6 +1,110 @@
-Tue, 06 Dec 2016 15:07:21 Client.py[line:105] INFO put buffer [[8848, 'Temporary Group', 0], [7737, 'Temporary Group', 0], [6626, 'Temporary Group', 0]]
-Tue, 06 Dec 2016 15:07:21 Client.py[line:105] INFO put buffer []
-Tue, 06 Dec 2016 15:10:57 Client.py[line:105] INFO put buffer (type=2)[[8848, 'Temporary Group', 0], [7737, 'Temporary Group', 0], [6626, 'Temporary Group', 0]]
-Tue, 06 Dec 2016 15:10:57 Client.py[line:105] INFO put buffer (type=6)[]
-Tue, 06 Dec 2016 15:11:05 Client.py[line:105] INFO put buffer (type=2)[[8848, 'Temporary Group', 0], [7737, 'Temporary Group', 0], [6626, 'Temporary Group', 0]]
-Tue, 06 Dec 2016 15:11:05 Client.py[line:105] INFO put buffer (type=6)[]
+Tue, 06 Dec 2016 16:43:12 util.py[line:35] ERROR 
+
+network.util
+read_json ( (<network.PMDatagram.PMDatagram object at 0x25a052c>, <socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 59308), raddr=('127.0.0.1', 8888)>), {} )
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 56, in read_json
+    d = json.loads(raw_msg)
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 30, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 58, in read_json
+    raise PMJSONException()
+network.PMDatagram.PMJSONException
+Tue, 06 Dec 2016 16:43:18 Server.py[line:63] INFO 8848(mzy) joined group 8848
+Tue, 06 Dec 2016 16:43:18 Client.py[line:111] INFO put buffer (type=9)8848
+Tue, 06 Dec 2016 16:43:28 util.py[line:35] ERROR 
+
+network.util
+read_json ( (<network.PMDatagram.PMDatagram object at 0x15327ac>, <socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 59313)>), {} )
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 56, in read_json
+    d = json.loads(raw_msg)
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 30, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 58, in read_json
+    raise PMJSONException()
+network.PMDatagram.PMJSONException
+Tue, 06 Dec 2016 16:43:29 Group.py[line:44] ERROR Adding user 8848(mzy) failed
+
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/Group.py", line 39, in add_user
+    self._users.add_user(conn, user_id, user_name, user_desc)
+  File "/Users/bh/projects/python/pyMessage/network/Group.py", line 70, in add_user
+    raise InvalidUserIDException()
+network.Group.InvalidUserIDException
+Tue, 06 Dec 2016 16:43:31 util.py[line:35] ERROR 
+
+network.util
+read_json ( (<network.PMDatagram.PMDatagram object at 0x153272c>, <socket.socket fd=7, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 59314)>), {} )
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 56, in read_json
+    d = json.loads(raw_msg)
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 30, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 58, in read_json
+    raise PMJSONException()
+network.PMDatagram.PMJSONException
+Tue, 06 Dec 2016 16:43:32 Group.py[line:44] ERROR Adding user 8848(mzy) failed
+
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/Group.py", line 39, in add_user
+    self._users.add_user(conn, user_id, user_name, user_desc)
+  File "/Users/bh/projects/python/pyMessage/network/Group.py", line 70, in add_user
+    raise InvalidUserIDException()
+network.Group.InvalidUserIDException
+Tue, 06 Dec 2016 16:43:34 util.py[line:35] ERROR 
+
+network.util
+read_json ( (<network.PMDatagram.PMDatagram object at 0x15327ac>, <socket.socket fd=7, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8888), raddr=('127.0.0.1', 59315)>), {} )
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 56, in read_json
+    d = json.loads(raw_msg)
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/bh/projects/python/pyMessage/network/util.py", line 30, in logged_func
+    return func(*args, **kwargs)
+  File "/Users/bh/projects/python/pyMessage/network/PMDatagram.py", line 58, in read_json
+    raise PMJSONException()
+network.PMDatagram.PMJSONException

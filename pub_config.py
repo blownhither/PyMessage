@@ -8,7 +8,9 @@ GET_GROUP_MEMBERS = 5
 RETURN_GROUP_MEMBERS = 6
 HISTORY = 7
 JOIN_GROUP = 8
-REGISTER_ALIAS = 9
+CONFIRM_JOIN_GROUP = 9
+REGISTER_ALIAS = 10
+
 
 # PMDatagram Fields
 FIELDS = {
@@ -26,4 +28,5 @@ FIELDS = {
 
 """
     2. In RETURN_GROUPS mode, List field will be [(group_id, name, n_members), ]
+
 """

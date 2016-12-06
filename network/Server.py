@@ -39,27 +39,50 @@ class Server(Thread):
             if t is not None:
                 if t == pc.GET_GROUPS:
                     p.send_groups(conn, self.get_group_info())
-                elif t == pc.JOIN_GROUP:
-                    self.join_group(d.get(fd["g"]), conn)
+                    continue
+
                 elif t == pc.CREATE_GROUP:
                     self._add_group(d.get[fd["g"]])
-                    self.join_group(d.get[fd["g"]], conn)
+                    # TODO:  ?!
+
                 elif t == pc.GET_GROUP_MEMBERS:
                     group_id = d.get(fd["g"])
                     if group_id is not None:
                         l = self.get_group_members(group_id)
                         if l is not None:
                             p.send_group_members(conn, group_id, l)
+                    continue
 
-    """ with parameter check """
-    def join_group(self, group_id, conn):
+                elif t == pc.JOIN_GROUP:
+                    group_id = d.get(fd["g"])
+                    user_id = d.get(fd["u"])
+                    alias = d.get(fd["x"])
+                    success = self.join_group(conn, group_id, user_id, alias)
+                    if success:
+                        log_str = "%d(%s) joined group %d" % (user_id, alias, group_id)
+                        logging.info(log_str)
+                        print(log_str)
+                        p.confirm_join_group(conn, group_id, alias)
+                    else:
+                        pass
+                        # TODO: unimplemented: name collision (nor back- or front-end)
+                    continue
+
+                else:
+                    log_str = " Unrecognized frame type " + str(t)
+                    print(log_str)
+                    logging.warning(log_str)
+                    continue
+
+    """ with parameter check, return False on failure """
+    def join_group(self, conn, group_id, user_id, alias=None):
         group = self._group_pool.get(group_id)
         if group_id is None or group is None:
             warning_str = str(conn) + "Attempt to join invalid group " + str(group_id)
             print(warning_str)
             logging.warning(warning_str)
             return False
-        group.add_conn(conn)
+        return group.add_user(conn=conn, user_id=user_id, user_name=alias)
 
     def add_group(self, group_id):
         self._add_group(group_id)

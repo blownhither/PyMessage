@@ -141,6 +141,29 @@ class PMDatagram:
             raise PMDataException()
         return l
 
+    """ Methods about joining groups
+    """
+    @exception_log
+    def require_join_group(self, conn, group_id, user_id, alias=None):
+        d = {
+            fd[0]: pc.JOIN_GROUP,
+            fd[1]: group_id,
+            fd[2]: -1,
+            fd["u"]: user_id,
+            fd["x"]: alias
+        }
+        self.send_json(conn, d)
+
+    @exception_log
+    def confirm_join_group(self, conn, group_id, alias):
+        d = {
+            fd[0]: pc.CONFIRM_JOIN_GROUP,
+            fd[1]: group_id,
+            fd[2]: -1,
+            fd["x"]: alias
+        }
+        self.send_json(conn, d)
+
 
 class PMTypeException(Exception):
     pass

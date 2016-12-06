@@ -24,9 +24,9 @@ from network.util import *
 
 
 class Client(Thread):
-    def __init__(self, client_id):
+    def __init__(self, user_id):
         Thread.__init__(self)
-        self.client_id = client_id
+        self.user_id = user_id
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.connect((config.CLIENT_HOST, config.PORT))
         print("Connected")
@@ -89,6 +89,12 @@ class Client(Thread):
                     continue
                 self._put_buffer(l, pc.RETURN_GROUP_MEMBERS)
                 print("Put Group members : " + str(l))
+                continue
+
+            elif t == pc.CONFIRM_JOIN_GROUP:
+                group_id = d.get(fd["g"])
+                self._put_buffer(group_id, pc.CONFIRM_JOIN_GROUP)
+                print("Confirm joined group " + str(group_id))
                 continue
 
             print("Server: " + d)
@@ -158,12 +164,28 @@ class Client(Thread):
         l = self._fetch_buffer(pc.RETURN_GROUP_MEMBERS)
         return l
 
+    def join_group(self, group_id, alias=None):
+        p = Pmd()
+        while True:
+            p.require_join_group(self.server, group_id, self.user_id, alias)
+            ret = self._fetch_buffer(pc.CONFIRM_JOIN_GROUP)
+            if ret == group_id:     # if mismatch caused by another thread (shouldn't happen), please require again
+                return True
+            else:
+                log_str = "Unmatched joining group %d feedback, unimplemented async? " % group_id
+                print(log_str)
+                logging.error(log_str)
+                return False            # Temporary
+
+
 if __name__ == "__main__":
     client = Client(8848)
     client.start()
 
-    print(client.get_groups())
-    print(client.get_group_members(8848))
+    # print(client.get_groups())
+    # print(client.get_group_members(8848))
+    print(client.join_group(8848, "mzy"))
+    print(client.join_group(8848, "mzy"))
     # client.get_groups()
     # client.get_groups()
     #

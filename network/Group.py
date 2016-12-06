@@ -34,8 +34,15 @@ class Group:
                 p = Pmd(data=data)
                 self._thread_pool.imap(p.send_json, conns)
 
-    def add_user(self, conn, user_id, user_name, user_desc):
-        self._users.add_user(conn, user_id, user_name, user_desc)
+    def add_user(self, conn, user_id, user_name, user_desc=None):
+        try:
+            self._users.add_user(conn, user_id, user_name, user_desc)
+            return True
+        except Exception as e:
+            log_str = "Adding user %d(%s) failed\n%s\n" % (user_id, user_name, str(e))
+            print(log_str)
+            logging.exception(log_str)
+            return False
 
     """ Format [(user_id, user_name, user_desc), ... ]"""
 

@@ -5,7 +5,7 @@ import eventlet
 import socket
 import multiprocessing as mtp
 import random
-from threading import Thread, Event
+from threading import Thread, Event, Lock
 import time
 
 import network.config as config
@@ -34,9 +34,17 @@ class Client(Thread):
         self.read_queue = []
         self.send_lock = mtp.Lock()
         self.read_lock = mtp.Lock()
-        self.group_info = None  # one slot, fetch and clear
-        self.group_info_event = Event()
 
+        # self.group_info = None  # one slot, fetch and clear
+        # self.group_info_event = Event()
+
+        # single slot, fetch and clear.
+        # Most UI-client use interfaces serialized
+        # currently used for transmitting GROUP_INFO, GROUP_MEMBERS... things other than message
+        self.buffer = None
+        self.buffer_type = None
+        self.buffer_event = Event()
+        self.buffer_lock = Lock()
         # self.thread_pool = eventlet.GreenPool(2)
         # self.thread_pool.spawn(self._read_routine)
         # self.thread_pool.spawn(self._send_routine)
@@ -67,15 +75,54 @@ class Client(Thread):
                 continue
             if t == pc.RETURN_GROUPS:
                 l = d.get(fd["l"])
-                self.group_info = l
-                print("Group info : " + str(l))
-                self.group_info_event.set()
+                if l is None:
+                    logging.warning("Corrupted RETURN_GROUPS frame without 'l' field")
+                    continue
+                self._put_buffer(l, pc.RETURN_GROUPS)
+                print("put Group info : " + str(l))
+                continue
+
+            elif t == pc.RETURN_GROUP_MEMBERS:
+                l = d.get(fd["l"])
+                if l is None:
+                    logging.warning("Corrupted RETURN_GROUP_MEMBERS frame without 'l' field")
+                    continue
+                self._put_buffer(l, pc.RETURN_GROUP_MEMBERS)
+                print("Put Group members : " + str(l))
                 continue
 
             print("Server: " + d)
             self.read_lock.acquire()
             self.read_queue.append(d)
             self.read_lock.release()
+
+    def _put_buffer(self, buffer, buffer_type):
+        if buffer is None:
+            logging.warning("Trying to put None in buffer (type %d)\n" % buffer_type)
+        self.buffer_lock.acquire()
+        self.buffer = buffer
+        self.buffer_type = pc.RETURN_GROUPS
+        logging.info("put buffer " + str(buffer))
+        self.buffer_lock.release()
+        self.buffer_event.set()
+
+    def _fetch_buffer(self, buffer_type):
+        while True:
+            if self.buffer is None or self.buffer_type != buffer_type:
+                self.buffer_event.wait(config.TIMEOUT)
+            else:
+                break
+        self.buffer_lock.acquire()
+        if self.buffer_type != buffer_type:
+            logging.error("Buffer type mismatch (%d, %d)" % (buffer_type, self.buffer_type))
+            self.buffer_lock.release()
+            return None         # yield at type failure
+        l = self.buffer
+        self.buffer = None
+        self.buffer_type = None
+        self.buffer_event.clear()
+        self.buffer_lock.release()
+        return l
 
     def _send_routine(self):
         while True:
@@ -101,26 +148,8 @@ class Client(Thread):
     def get_groups(self):
         p = Pmd()
         p.require_groups(self.server)
-        while True:
-            if self.group_info is None:
-                self.group_info_event.wait(timeout=config.TIMEOUT)
-            else:
-                l = self.group_info
-                self.group_info = None
-                return l
-        # msg = p.read_msg(self.server)
-        # flag = True
-        # while flag:
-        #     try:
-        #         p.parse_groups(msg)
-        #         flag = False
-        #     except PMTypeException as e:
-        #         flag = True
-        #         self.read_queue.append(msg)
-
-
-
-
+        l = self._fetch_buffer(pc.RETURN_GROUPS)
+        return l
 
 
 if __name__ == "__main__":

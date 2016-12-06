@@ -101,8 +101,8 @@ class Client(Thread):
             logging.warning("Trying to put None in buffer (type %d)\n" % buffer_type)
         self.buffer_lock.acquire()
         self.buffer = buffer
-        self.buffer_type = pc.RETURN_GROUPS
-        logging.info("put buffer " + str(buffer))
+        self.buffer_type = buffer_type
+        logging.info("put buffer (type=%d)%s" % (buffer_type, str(buffer)))
         self.buffer_lock.release()
         self.buffer_event.set()
 
@@ -122,6 +122,7 @@ class Client(Thread):
         self.buffer_type = None
         self.buffer_event.clear()
         self.buffer_lock.release()
+        print("Fetched " + str(l))
         return l
 
     def _send_routine(self):
@@ -151,13 +152,18 @@ class Client(Thread):
         l = self._fetch_buffer(pc.RETURN_GROUPS)
         return l
 
+    def get_group_members(self, group_id):
+        p = Pmd()
+        p.require_group_members(self.server, group_id)
+        l = self._fetch_buffer(pc.RETURN_GROUP_MEMBERS)
+        return l
 
 if __name__ == "__main__":
     client = Client(8848)
     client.start()
 
     print(client.get_groups())
-    print(client.get_groups())
+    print(client.get_group_members(8848))
     # client.get_groups()
     # client.get_groups()
     #

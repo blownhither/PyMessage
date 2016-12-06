@@ -81,8 +81,8 @@ class Server(Thread):
 
     """ Format [(user_id, user_name, user_desc), ... ]"""
     def get_group_members(self, group_id):
-        g = self._group_pool.get(group_id)
-        if g is not None:
+        g = self._group_pool.get(int(group_id))
+        if g is None:
             warning_str = "Get users from invalid group ID " + str(group_id)
             print(warning_str)
             logging.warning(warning_str)

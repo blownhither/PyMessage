@@ -65,7 +65,7 @@ class PMDatagram:
             dict_data = self.data
         msg = self.json_decoder.encode(dict_data)
         self.send_raw_msg(conn, msg)
-        # dprint("json str : " + msg)
+        dprint("json str : " + msg)
 
     @exception_log
     def send_msg_all(self, conn):
@@ -160,7 +160,21 @@ class PMDatagram:
             fd[0]: pc.CONFIRM_JOIN_GROUP,
             fd[1]: group_id,
             fd[2]: -1,
-            fd["x"]: alias
+            fd["x"]: alias,
+        }
+        self.send_json(conn, d)
+
+    """ Methods about text message
+    """
+    @exception_log
+    def send_msg(self, conn, group_id, user_id, msg):
+        d = {
+            fd[0]: pc.CLIENT_SEND_MSG,
+            fd[1]: group_id,
+            fd[2]: -1,
+            fd["t"]: encode_timestamp(),  # time
+            fd["x"]: msg,
+            fd["u"]: user_id,
         }
         self.send_json(conn, d)
 

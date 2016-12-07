@@ -1,4 +1,6 @@
 import eventlet
+import random
+
 import network.config as config
 from network.PMDatagram import PMDatagram as Pmd
 from network.util import *
@@ -18,21 +20,29 @@ class Group:
         self.group_id = group_id
         self.desc = desc
         self.name = name
-        self._users = Users()
+        self._users = Users()       # TODO: queue need lock?
         self._broadcast_queue = []  # JSON Datagrams
+
+        self._thread_pool = eventlet.GreenPool(config.POOL_SIZE)
         # Group._group_pool[group_id] = self._conn_pool
-        self._thread_pool = eventlet.GreenPool(config.CONN_THREAD_NUM)
+
+        self.msg_id = random.randint(0, 1e7)
 
     def set_desc(self, desc):
         self.desc = desc
 
-    def broadcast_routine(self, conn):
-        while True:
-            if len(self._broadcast_queue) != 0:
-                data = self._broadcast_queue.pop(0)
-                conns = self._users.all_conns()
-                p = Pmd(data=data)
-                self._thread_pool.imap(p.send_json, conns)
+    # def _broadcast_routine(self):
+    #     while True:
+    #         if len(self._broadcast_queue) != 0:
+    #             data = self._broadcast_queue.pop(0)
+    #             conns = self._users.all_conns()
+    #             p = Pmd(data=data)
+    #             self._thread_pool.imap(p.send_json, conns)
+
+    def _broadcast(self, datagram):
+        p = Pmd(data=datagram)
+        conns = self._users.all_conns()
+        self._thread_pool.imap(p.send_json, conns)
 
     def add_user(self, conn, user_id, user_name, user_desc=None):
         try:
@@ -43,17 +53,27 @@ class Group:
             logging.exception(log_str)
             return False
 
-    """ Format [(user_id, user_name, user_desc), ... ]"""
+    def remove_user(self):
+        # TODO: ?
+        pass
 
+    def add_msg(self, conn, datagram):
+        user_id = datagram["u"]
+        if not self._users.validate_user(conn=conn, user_id=user_id):
+            raise InvalidUserIDException()
+        datagram[fd[0]] = pc.SERVER_SEND_MSG
+        datagram[fd[2]] = self.msg_id
+        self.msg_id += 1
+        datagram[fd["Time"]] = encode_timestamp()
+        self._broadcast(datagram)
+        # self._broadcast_queue.append(datagram)
+
+    """ Format [(user_id, user_name, user_desc), ... ]"""
     def user_list(self):
         return self._users.all_users()
 
     def group_info(self):
         return self.group_id, self.name, self._users.user_count()
-
-    def conn_exit(self):
-        # TODO:
-        pass
 
 
 class Users:
@@ -83,6 +103,17 @@ class Users:
         if user_id not in self._all_users.keys():
             raise InvalidUserIDException()
         self._all_users.pop(user_id)
+
+    def validate_user(self, conn, user_id, user_name=None):
+        t = self._all_users.get(user_id)
+        if t is None:
+            return False
+        if t[0] != conn:
+            return  False
+        if user_name is not None and user_name != t[1]:
+            return False
+        return True
+
 
     def all_conns(self):
         return [x[0] for x in self._all_users.values()]

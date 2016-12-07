@@ -15,6 +15,7 @@ def read_conn_tuple(conn, length):
         byte_msg = None
         try:
             byte_msg, addr = conn.recvfrom(length)
+            # dprint("read_conn_tuple: " + str(byte_msg, "utf-8"))
         except socket.timeout as e:
             eventlet.sleep(config.SLEEP)
         except ConnectionError as e:
@@ -34,8 +35,10 @@ def write_conn(conn, byte_msg):
     # conn.settimeout(config.TIMEOUT)
     try:
         # dprint("connect.write_conn : " + str(byte_msg))
-        return conn.send(byte_msg)
+        return conn.sendall(byte_msg)   # sendall ensures sending whole string despite buffer size
+        # return conn.send(byte_msg)
     except ConnectionError as e:
         eventlet.kill(eventlet.getcurrent())
         raise e
-
+    except OSError as e:
+        print("OSError")

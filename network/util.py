@@ -55,12 +55,14 @@ class NeedExitException(Exception):
 
 @exception_log
 def encode_timestamp():
-    return int(time.time() * 1000).to_bytes(config.TIME_LEN, config.ENDIAN)
+    return int(time.time() * 10000)
+    # return int(time.time() * 10000).to_bytes(config.TIME_LEN, config.ENDIAN)
 
 
 @exception_log
-def decode_timestamp(bytes_msg):
-    return int.from_bytes(bytes_msg, config.ENDIAN) / 1000.0
+def decode_timestamp(msg):
+    return int(msg) * 10000.0
+    # return int.from_bytes(bytes_msg, config.ENDIAN) / 10000.0
 
 
 def dprint(*args):

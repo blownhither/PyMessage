@@ -14,14 +14,6 @@ from network.PMDatagram import *
 from network.util import *
 
 
-"""Usage:
-    client = Client(8848)
-    client.start()
-
-    # anytime
-    client.put_msg(msg)
-"""
-
 
 class Client(Thread):
     def __init__(self, user_id):
@@ -29,10 +21,11 @@ class Client(Thread):
         self.user_id = user_id
         self.server = None
         self._connect()
-        self.send_queue = []
-        self.read_queue = []
-        self.send_lock = mtp.Lock()
-        self.read_lock = mtp.Lock()
+        self.send_queue = []    # [(msg, group_id), ...]
+        self.read_queue = []    # [{msg=, groupId=, userId=, time=}]
+        self.send_lock = Lock()
+        self.read_lock = Lock()
+        self.read_event = Event()
 
         # self.group_info = None  # one slot, fetch and clear
         # self.group_info_event = Event()
@@ -51,6 +44,12 @@ class Client(Thread):
         # self.read_thread = eventlet.spawn(self._read_routine)
         # self.send_thread = eventlet.spawn(self._send_routine)
 
+    def __del__(self):
+        self.server.close()
+
+    def close(self):
+        self.server.close()
+
     """override Thread.run"""
     def run(self):
         read_thread = eventlet.spawn(self._read_routine)
@@ -59,6 +58,7 @@ class Client(Thread):
         read_thread.wait()
         # self.thread_pool.waitall()
 
+    """Network connections """
     def _connect(self):
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.connect((config.CLIENT_HOST, config.PORT))
@@ -67,15 +67,19 @@ class Client(Thread):
     def _reconnect(self):
         if self.server is not None:
             self.server.close()
-        while True:
+            self.server = None
+        while self.server is None:
             try:
                 self._connect()  # try to reconnect
             except Exception as e:
                 log_str = str(e) + "\nUnable to reach server"
                 dprint(log_str)
                 logging.error(log_str)
+                self.server = None
                 time.sleep(config.LONG_TIMEOUT)
 
+
+    """Thread rountines"""
     def _read_routine(self):
         while True:
             p = Pmd()
@@ -115,11 +119,32 @@ class Client(Thread):
                 dprint("Confirm joined group " + str(group_id))
                 continue
 
-            dprint("Server: " + d)
-            self.read_lock.acquire()
-            self.read_queue.append(d)
-            self.read_lock.release()
+            elif t == pc.SERVER_SEND_MSG:
+                self._add_read_queue(d)
+                dprint("get message")
 
+            else:
+                log_str = "Unrecognized frame type"
+                dprint(log_str)
+                logging.error(log_str)
+                continue
+
+    def _send_routine(self):
+        p = Pmd()
+        while True:
+            while len(self.send_queue) == 0:
+                eventlet.sleep(config.SLEEP)
+            dprint("%d Left" % len(self.send_queue))
+            self.send_lock.acquire()
+            if len(self.send_queue) == 0:
+                self.send_lock.release()
+                continue
+            msg, group_id = self.send_queue.pop(0)
+            self.send_lock.release()
+            p.send_msg(self.server, group_id, self.user_id, msg)
+            dprint("Sent msg : " + msg)
+
+    """Buffer routines"""
     def _put_buffer(self, buffer, buffer_type):
         if buffer is None:
             logging.warning("Trying to put None in buffer (type %d)\n" % buffer_type)
@@ -149,26 +174,49 @@ class Client(Thread):
         dprint("Fetched " + str(l))
         return l
 
-    def _send_routine(self):
-        while True:
-            while len(self.send_queue) == 0:
-                eventlet.sleep(config.SLEEP)
-            dprint("%d Left" % len(self.send_queue))
-            msg = self.send_queue.pop(0)
-            p = Pmd(msg)
-            p.send_raw_msg(self.server)
-            dprint("Sent")
-
-    def put_msg(self, msg):
+    def put_msg(self, msg, group_id):
         self.send_lock.acquire()
-        self.send_queue.append(msg)
+        self.send_queue.append((str(msg), group_id))
         self.send_lock.release()
 
-    def read_msg(self):
+    def _add_read_queue(self, datagram):
         self.read_lock.acquire()
-        ret = self.read_queue.pop(0)
+        d = {
+            "msg": datagram[fd["x"]],
+            "groupId": datagram[fd["g"]],
+            "userId": datagram[fd["u"]],
+            "time": datagram[fd["Time"]]
+        }
+        self.read_queue.append(d)
+        self.read_event.set()
         self.read_lock.release()
-        return ret
+
+    def read_msg(self, blocking=True):
+        if blocking is False:
+            self.read_lock.acquire()
+            if len(self.read_queue) > 0:
+                ret = self.read_queue.copy()
+                self.read_queue.clear()
+            else:
+                ret = None
+            self.read_lock.release()
+            return ret
+        # use blocking
+        while True:
+            if len(self.read_queue) == 0:
+                success = self.read_event.wait(config.TIMEOUT)
+                continue
+            else:
+                self.read_lock.acquire()
+                if len(self.read_queue) == 0:
+                    self.read_lock.release()
+                    continue
+                # ret = self.read_queue.pop(0)
+                ret = self.read_queue.copy()
+                self.read_queue.clear()
+                self.read_event.clear()
+                self.read_lock.release()
+                return ret
 
     def get_groups(self):
         p = Pmd()
@@ -197,20 +245,21 @@ class Client(Thread):
 
 
 if __name__ == "__main__":
-    client = Client(8848)
+    r = random.randint(0, 1000)
+    client = Client(r)
+    print("This is " + str(r))
     client.start()
-
-    # print(client.get_groups())
-    # print(client.get_group_members(8848))
-    print(client.join_group(8848, "mzy"))
-    print(client.join_group(8848, "mzy2"))
-    print(client.get_group_members(8848))
-    # client.get_groups()
-    # client.get_groups()
-    #
-    # while True:
-        # client.put_msg(str(random.randint(1, 1000)))
-
+    print(client.join_group(8848, "mzy2"))  # Rename
+    while True:
+        msg = "Hello No." + str(random.randint(1000, 2000))
+        client.put_msg(msg, 8848)
+        ml = None
+        while ml is None:
+            ml = client.read_msg(blocking=False)
+        for x in ml:
+            print("server: " + str(x["msg"]))
+        time.sleep(3)
+    client.close()
 
     # eventlet.spawn(client.start)
     # eventlet.spawn(main)

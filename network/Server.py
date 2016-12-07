@@ -28,6 +28,20 @@ class Server(Thread):
         self._main_thread = eventlet.spawn(self._accept_any)
         self._main_thread.wait()
 
+    """Thread routines"""
+    def _accept_any(self):
+        self._server.settimeout(config.TIMEOUT)
+        while True:
+            conn = None
+            address = None
+            while conn is None:
+                try:
+                    conn, address = self._server.accept()
+                except socket.timeout as t:
+                    eventlet.sleep(config.TIMEOUT)
+            dprint("Accepted" + str(address))
+            eventlet.spawn_n(self._handle_any, conn)
+
     """Those who are connected and not yet in any group"""
     def _handle_any(self, conn):
         p = Pmd()
@@ -67,14 +81,19 @@ class Server(Thread):
                     success = self.join_group(conn, group_id, user_id, alias)
                     if success:
                         log_str = "%d(%s) joined group %d" % (user_id, alias, group_id)
-                        logging.info(log_str)
-                        dprint(log_str)
-                        p.confirm_join_group(conn, group_id, alias)
                     else:
                         log_str = "%d(%s) request for joining group %d rejected " % (user_id, alias, group_id)
-                        logging.info(log_str)
-                        dprint(log_str)
-                        p.confirm_join_group(conn, -1, "")       # send -1 as group_id
+                        group_id = -1
+                        alias = ""
+                    logging.info(log_str)
+                    dprint(log_str)
+                    p.confirm_join_group(conn, group_id, alias)
+                    continue
+
+                elif t == pc.CLIENT_SEND_MSG:
+                    self._broadcast(conn, d)
+                    print(d["u"])
+                    # TODO: deal with ret
                     continue
 
                 else:
@@ -107,6 +126,18 @@ class Server(Thread):
         self._group_pool[group_id] = g
         return g
 
+    def _broadcast(self, conn, datagram):
+        group_id = datagram.get(fd["g"])
+        g = self._group_pool.get(group_id)
+        if g is None:
+            log_str = "Broadcast to invalid group " + str(group_id)
+            dprint(log_str)
+            logging.error(log_str)
+            return
+        datagram[fd[0]] = pc.SERVER_SEND_MSG
+        g.add_msg(conn, datagram)
+
+
     """ Format [(group_id, name, n_members), ... ]"""
     def get_group_info(self):
         return [x.group_info() for x in self._group_pool.values()]
@@ -121,20 +152,6 @@ class Server(Thread):
             return None
         return g.user_list()
 
-    def _accept_any(self):
-        self._server.settimeout(config.TIMEOUT)
-        while True:
-            conn = None
-            address = None
-            while conn is None:
-                try:
-                    conn, address = self._server.accept()
-                except socket.timeout as t:
-                    eventlet.sleep(config.TIMEOUT)
-                    # conn, address = server.accept()
-                    # handle(conn)
-            dprint("Accepted" + str(address))
-            eventlet.spawn_n(self._handle_any, conn)
 
 
 if __name__ == "__main__":

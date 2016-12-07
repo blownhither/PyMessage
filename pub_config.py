@@ -24,6 +24,7 @@ FIELDS = {
     "FileText": "ft", "ft": "ft",
     "List": "l", "l": "l",
     "UserId": "u", "u": "u",
+    "UserName": "n", "n": "n",
     # set to -1 when invalid but necessary
 }
 

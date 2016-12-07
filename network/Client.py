@@ -91,7 +91,7 @@ class Client(Thread):
     def _read_routine(self):
         while True:
             p = Pmd()
-            dprint("Reading.. ")
+            # dprint("Reading.. ")
             d = p.read_json(self.server)
             if d is None:
                 # raise PMEmptyDataException()
@@ -129,7 +129,7 @@ class Client(Thread):
 
             elif t == pc.SERVER_SEND_MSG:
                 self._add_read_queue(d)
-                dprint("get message")
+                # dprint("get message")
 
             elif t == pc.RETURN_ID:
                 id = d.get(fd["u"])
@@ -165,15 +165,15 @@ class Client(Thread):
         while True:
             while len(self.send_queue) == 0:
                 eventlet.sleep(config.SLEEP)
-            dprint("%d Left" % len(self.send_queue))
+            # dprint("%d Left" % len(self.send_queue))
             self.send_lock.acquire()
             if len(self.send_queue) == 0:
                 self.send_lock.release()
                 continue
             msg, group_id = self.send_queue.pop(0)
             self.send_lock.release()
-            p.send_msg(self.server, group_id, self.user_id, msg)
-            dprint("Sent msg : " + msg)
+            p.send_msg(self.server, group_id, self.user_id, "", msg)
+            dprint("\t\t\t\tSent msg : " + msg)
 
     """Buffer routines"""
     def _put_buffer(self, buffer, buffer_type):
@@ -226,7 +226,8 @@ class Client(Thread):
             "msg": datagram[fd["x"]],
             "groupId": datagram[fd["g"]],
             "userId": datagram[fd["u"]],
-            "time": datagram[fd["Time"]]
+            "userName": datagram[fd["n"]],
+            "time": datagram[fd["Time"]],
         }
         self.read_queue.append(d)
         self.read_event.set()
@@ -307,7 +308,7 @@ if __name__ == "__main__":
 
     group_id = client.add_group("BILIBILI")
     print(client.get_groups())
-    print(client.join_group(group_id, "mzy" + str(random.randint(1, 10000))))
+    print(client.join_group(group_id, "mzy"))
 
     while True:
         msg = "Hello No." + str(random.randint(1000, 2000))
@@ -316,7 +317,7 @@ if __name__ == "__main__":
         while ml is None:
             ml = client.read_msg(blocking=False)
         for x in ml:
-            print("%s:\n\t%s" % (str(x["userId"]), str(x["msg"])))
+            print("%s(%s):\n\t%s" % (x["userName"], str(x["userId"]), str(x["msg"])))
         time.sleep(3)
     client.close()
 

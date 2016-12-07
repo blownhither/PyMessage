@@ -217,7 +217,7 @@ class PMDatagram:
     """ Methods about text message
     """
     @exception_log
-    def send_msg(self, conn, group_id, user_id, msg):
+    def send_msg(self, conn, group_id, user_id, user_name, msg):
         d = {
             fd[0]: pc.CLIENT_SEND_MSG,
             fd[1]: group_id,
@@ -225,6 +225,7 @@ class PMDatagram:
             fd["t"]: encode_timestamp(),  # time
             fd["x"]: msg,
             fd["u"]: user_id,
+            fd['n']: user_name,
         }
         self.send_json(conn, d)
 

@@ -63,6 +63,7 @@ class Group:
             raise InvalidUserIDException()
         datagram[fd[0]] = pc.SERVER_SEND_MSG
         datagram[fd[2]] = self.msg_id
+        datagram[fd["UserName"]] = self._users[user_id][1]
         self.msg_id += 1
         datagram[fd["Time"]] = encode_timestamp()
         self._broadcast(datagram)
@@ -83,6 +84,9 @@ class Users:
 
     def __init__(self):
         self._all_users = {}
+
+    def __getitem__(self, item):            # used as user[user_id]
+        return self._all_users.get(item)
 
     def add_user(self, conn, user_id, user_name=None, user_desc=None):
         if user_id in self._all_users.keys():   # having joined

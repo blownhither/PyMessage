@@ -1,5 +1,6 @@
 import eventlet
 import socket
+import random
 from threading import Thread
 
 import network.config as config
@@ -14,6 +15,7 @@ class Server(Thread):
     def __init__(self):
         Thread.__init__(self)
         self._group_pool = {}   # [group_id] => aGroup
+        self._id_pool = {}       # [user_id] => conn
         # self._idle_pool = {}
         self._main_thread = None
 
@@ -96,6 +98,11 @@ class Server(Thread):
                     # TODO: deal with ret
                     continue
 
+                elif t == pc.REQUEST_ID:
+                    user_id = self.assign_user_id(conn)
+                    print("Assigned User ID " + str(user_id))
+                    continue
+
                 else:
                     log_str = " Unrecognized frame type " + str(t)
                     dprint(log_str)
@@ -137,7 +144,6 @@ class Server(Thread):
         datagram[fd[0]] = pc.SERVER_SEND_MSG
         g.add_msg(conn, datagram)
 
-
     """ Format [(group_id, name, n_members), ... ]"""
     def get_group_info(self):
         return [x.group_info() for x in self._group_pool.values()]
@@ -152,6 +158,16 @@ class Server(Thread):
             return None
         return g.user_list()
 
+    def assign_user_id(self, conn):
+        user_id = None
+        while True:
+            user_id = random.randint(config.ID_MIN, config.ID_MAX)
+            if user_id not in self._id_pool.keys():
+                break
+        self._id_pool[user_id] = conn
+        p = Pmd()
+        p.return_user_id(conn, user_id)
+        return user_id
 
 
 if __name__ == "__main__":

@@ -4,7 +4,9 @@ import time
 from network.Client import Client
 
 """ This is an example for Client
-    .run            ->
+    Client          -> (constructor)
+    .start:         ->
+    .get_user_id:   -> user_id
     .get_groups:    -> [(group_id, name, n_members), ... ]
     .join_group:    group_id, in_group_alias -> confirmation
     .put_msg:       text_msg, target_group_id
@@ -13,10 +15,9 @@ from network.Client import Client
 
 """
 if __name__ == "__main__":
-    r = random.randint(0, 1000)
-    client = Client(r)
-    client.run()
-    print("This is client " + str(r))
+    client = Client()
+    client.start()
+    print("This is client " + str(client.get_user_id()))
 
     client.start()
     print(client.get_groups())

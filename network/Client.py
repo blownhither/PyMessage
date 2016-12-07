@@ -16,9 +16,10 @@ from network.util import *
 
 
 class Client(Thread):
-    def __init__(self, user_id):
+    def __init__(self):
         Thread.__init__(self)
-        self.user_id = user_id
+        self.user_id = None
+        self.user_id_event = Event()
         self.server = None
         self._connect()
         self.send_queue = []    # [(msg, group_id), ...]
@@ -43,6 +44,8 @@ class Client(Thread):
 
         # self.read_thread = eventlet.spawn(self._read_routine)
         # self.send_thread = eventlet.spawn(self._send_routine)
+        self._request_user_id()
+
 
     def __del__(self):
         self.server.close()
@@ -78,6 +81,11 @@ class Client(Thread):
                 self.server = None
                 time.sleep(config.LONG_TIMEOUT)
 
+    """Must-do routines"""
+    def _request_user_id(self):
+        dprint("Requesting user id")
+        p = Pmd()
+        p.request_user_id(self.server)
 
     """Thread rountines"""
     def _read_routine(self):
@@ -122,6 +130,20 @@ class Client(Thread):
             elif t == pc.SERVER_SEND_MSG:
                 self._add_read_queue(d)
                 dprint("get message")
+
+            elif t == pc.RETURN_ID:
+                id = d.get(fd["u"])
+                if id is None:
+                    log_str = "Corrupted RETURN_ID frame, missing UserID"
+                    logging.error(log_str)
+                    dprint(log_str)
+                    continue
+                if self.user_id is not None:
+                    log_str = "User ID Re-assignment %d->%d" % (self.user_id, id)
+                    logging.warning(log_str)
+                    dprint(log_str)
+                self.user_id = id
+                self.user_id_event.set()
 
             else:
                 log_str = "Unrecognized frame type"
@@ -174,7 +196,17 @@ class Client(Thread):
         dprint("Fetched " + str(l))
         return l
 
+    def get_user_id(self):
+        self.user_id_event.wait(config.LONG_TIMEOUT)
+        while self.user_id is None:
+            self._request_user_id()
+            self.user_id_event.wait(config.LONG_TIMEOUT)    # TODO: ?!
+        self.user_id_event.clear()
+        return self.user_id
+
     def put_msg(self, msg, group_id):
+        if self.user_id is None:
+            self.get_user_id()
         self.send_lock.acquire()
         self.send_queue.append((str(msg), group_id))
         self.send_lock.release()
@@ -220,20 +252,22 @@ class Client(Thread):
 
     def get_groups(self):
         p = Pmd()
-        p.require_groups(self.server)
+        p.request_groups(self.server)
         l = self._fetch_buffer(pc.RETURN_GROUPS)
         return l
 
     def get_group_members(self, group_id):
         p = Pmd()
-        p.require_group_members(self.server, group_id)
+        p.request_group_members(self.server, group_id)
         l = self._fetch_buffer(pc.RETURN_GROUP_MEMBERS)
         return l
 
     def join_group(self, group_id, alias=None):
+        if self.user_id is None:
+            self.get_user_id()
         p = Pmd()
         while True:
-            p.require_join_group(self.server, group_id, self.user_id, alias)
+            p.request_join_group(self.server, group_id, self.user_id, alias)
             ret = self._fetch_buffer(pc.CONFIRM_JOIN_GROUP)
             if ret == group_id:     # if mismatch caused by another thread (shouldn't happen), please require again
                 return True
@@ -244,11 +278,12 @@ class Client(Thread):
                 return False            # Temporary
 
 
+
 if __name__ == "__main__":
-    r = random.randint(0, 1000)
-    client = Client(r)
-    print("This is " + str(r))
+    # r = random.randint(0, 1000)
+    client = Client()
     client.start()
+    print("This is " + str(client.get_user_id()))
     print(client.join_group(8848, "mzy2"))  # Rename
     while True:
         msg = "Hello No." + str(random.randint(1000, 2000))

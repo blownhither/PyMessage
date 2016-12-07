@@ -65,7 +65,7 @@ class PMDatagram:
             dict_data = self.data
         msg = self.json_decoder.encode(dict_data)
         self.send_raw_msg(conn, msg)
-        dprint("json str : " + msg)
+        # dprint("json str : " + msg)
 
     @exception_log
     def send_msg_all(self, conn):
@@ -76,13 +76,34 @@ class PMDatagram:
     def get_raw_msg(self):
         return self.msg
 
+    """ Methods about ID negotiation
+    """
+    @exception_log
+    def request_user_id(self, conn):
+        d = {
+            fd[0]: pc.REQUEST_ID,
+            fd[1]: -1,
+            fd[2]: -1,
+        }
+        self.send_json(conn, d)
+
+    @exception_log
+    def return_user_id(self, conn, user_id):
+        d = {
+            fd[0]: pc.RETURN_ID,
+            fd[1]: -1,
+            fd[2]: -1,
+            fd["u"]: user_id,
+        }
+        self.send_json(conn, d)
+
     """
         Methods about groups
         Refer to pub_config to read about groups data specifications
         [(group_id, name, n_members), ]
     """
     @exception_log
-    def require_groups(self, conn):
+    def request_groups(self, conn):
         d = {
             fd[0]: pc.GET_GROUPS,
             fd[1]: -1,
@@ -114,7 +135,7 @@ class PMDatagram:
     """
 
     @exception_log
-    def require_group_members(self, conn, group_id):
+    def request_group_members(self, conn, group_id):
         d = {
             fd[0]: pc.GET_GROUP_MEMBERS,
             fd[1]: group_id,
@@ -144,7 +165,7 @@ class PMDatagram:
     """ Methods about joining groups
     """
     @exception_log
-    def require_join_group(self, conn, group_id, user_id, alias=None):
+    def request_join_group(self, conn, group_id, user_id, alias=None):
         d = {
             fd[0]: pc.JOIN_GROUP,
             fd[1]: group_id,

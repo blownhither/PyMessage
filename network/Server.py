@@ -130,16 +130,21 @@ class Server(Thread):
 
     # Throws Exception
     def _add_group(self, group_id=None, name="Temporary Group", desc=""):
-        if group_id is None:
-            while True:
-                group_id = random.randint(config.GROUP_ID_MIN, config.GROUP_ID_MAX)
-                if self._group_pool.get(group_id) is None:
-                    break
-        elif self._group_pool.get(group_id) is not None:
+        if group_id is None:                                # Need assignment
+            group_id = self.find_group_name(name)
+            if group_id is None:                            # is new group
+                while True:
+                    group_id = random.randint(config.GROUP_ID_MIN, config.GROUP_ID_MAX)
+                    if self._group_pool.get(group_id) is None:
+                        break
+            else:                                           # have that name
+                return group_id
+        elif self._group_pool.get(group_id) is not None:    # Arbitrary group_id
             warning_str = "Re-create group_id / groupId collision on " + str(group_id)
             dprint(warning_str)
             logging.warning(warning_str)
-            return False
+            return group_id
+        # Arbitrary ID, or newly assigned group_id
         g = Group(group_id=group_id, desc=desc, name=name)
         self._group_pool[group_id] = g
         return group_id
@@ -154,6 +159,12 @@ class Server(Thread):
             return
         datagram[fd[0]] = pc.SERVER_SEND_MSG
         g.add_msg(conn, datagram)
+
+    def find_group_name(self, group_name):
+        for x in self._group_pool.values():
+            if group_name == x.name:
+                return x.group_id
+        return None
 
     """ Format [(group_id, name, n_members), ... ]"""
     def get_group_info(self):

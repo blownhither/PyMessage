@@ -10,6 +10,7 @@ import time
 import json
 import asyncio
 import sqlite3
+import pyDes
 
 #
 # def pr(a):
@@ -105,7 +106,42 @@ class T():
         T.pub.append(3)
         print(str(T.pub))
 
+
+des = pyDes.des("ZZSBETJD", pad=" ")
+
+
+def read_raw_msg(des_all):
+    global  des
+    des_len = des_all[: 8]
+    byte_len = des.decrypt(des_len)
+    print("byte_len : " + str(byte_len))
+    msg_len = int.from_bytes(byte_len, 'big')
+    print("msg_len : " + str(msg_len))
+
+    des_msg = des_all[8: ]
+    if len(des_msg) != msg_len:
+        print("!!!!!!")
+
+    byte_msg = des.decrypt(des_msg)
+    msg = str(byte_msg, "utf-8")
+    print("read_raw_msg : " + msg)
+    return msg
+
+
+def send_raw_msg(msg):
+    global des
+    des_msg = des.encrypt(bytes(msg, "utf-8"))
+    byte_header = len(des_msg).to_bytes(8, "big")
+    des_header = des.encrypt(byte_header)
+    print("send_raw_msg: %s->%s" % (msg, des_header + des_msg))
+    return des_header + des_msg
+
 if __name__ == "__main__":
+    while True:
+        raw = send_raw_msg("Hello")
+        ret = read_raw_msg(raw)
+        print(ret)
+
     # server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # server.settimeout(0.5)
     # server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -115,8 +151,10 @@ if __name__ == "__main__":
     # main_thread = eventlet.spawn(accept_any, server)
     # main_thread.wait()
 
-    db = sqlite3.connect("test.db")
-    db.execute("create table test (a int primary key, b int);")
-    db.execute("insert into test values (3, 5);")
-    cursor = db.execute("select * from test;")
-    cursor.fetchall()
+
+
+    # db = sqlite3.connect("test.db")
+    # db.execute("create table test (a int primary key, b int);")
+    # db.execute("insert into test values (3, 5);")
+    # cursor = db.execute("select * from test;")
+    # cursor.fetchall()

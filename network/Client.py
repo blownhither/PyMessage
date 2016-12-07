@@ -307,7 +307,7 @@ if __name__ == "__main__":
 
     group_id = client.add_group("BILIBILI")
     print(client.get_groups())
-    print(client.join_group(group_id, "mzy"))
+    print(client.join_group(group_id, "mzy" + str(random.randint(1, 10000))))
 
     while True:
         msg = "Hello No." + str(random.randint(1000, 2000))
@@ -316,7 +316,7 @@ if __name__ == "__main__":
         while ml is None:
             ml = client.read_msg(blocking=False)
         for x in ml:
-            print("server: " + str(x["msg"]))
+            print("%s:\n\t%s" % (str(x["userId"]), str(x["msg"])))
         time.sleep(3)
     client.close()
 

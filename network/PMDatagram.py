@@ -1,10 +1,13 @@
 import json
+import pyDes
 
 import pub_config as pc
 from pub_config import FIELDS as fd
 import network.config as config
 import network.connect as connect
 from network.util import *
+
+des = pyDes.des(config.DES_CODE, pad=" ")
 
 
 class PMDatagram:
@@ -27,26 +30,52 @@ class PMDatagram:
     @exception_log
     def parse_len(byte_msg):
         try:
-            msg_len = int.from_bytes(byte_msg[: config.HEADER_LEN], config.ENDIAN)
+            msg_len = int.from_bytes(byte_msg, config.ENDIAN)
+            # msg_len = int.from_bytes(byte_msg[: config.HEADER_LEN], config.ENDIAN)
         except ValueError as ve:
             raise Exception("Invalid length header")    # TODO: use other exception
         return msg_len
 
     @exception_log
     def read_raw_msg(self, conn):
+        # byte_len = connect.read_conn(conn, config.HEADER_LEN)
+        # self.msg_len = self.parse_len(byte_len)
+        # self.msg = str(connect.read_conn(conn, self.msg_len), "utf-8")
+        # # dprint("read_raw_msg : " + self.msg)
+        # return self.msg
+
         byte_len = connect.read_conn(conn, config.HEADER_LEN)
-        self.msg_len = self.parse_len(byte_len)
-        self.msg = str(connect.read_conn(conn, self.msg_len), "utf-8")
-        # dprint("read_raw_msg : " + self.msg)
+        # des_len = connect.read_conn(conn, config.ENCRYPTED_HEADER_LEN)
+        # byte_len = des.decrypt(des_len)
+        # print("byte_len : " + str(byte_len))
+        # self.msg_len = self.parse_len(byte_len)
+        self.msg_len = int.from_bytes(byte_len, 'big')
+        # print("msg_len : " + str(self.msg_len))
+        des_msg = connect.read_conn(conn, self.msg_len)
+        byte_msg = des.decrypt(des_msg)
+        self.msg = str(byte_msg, "utf-8")
+        # print("read_raw_msg : " + self.msg)
         return self.msg
 
     @exception_log
     def send_raw_msg(self, conn, msg=None):
+        # if msg is None:
+        #     msg = self.msg
+        # byte_msg = len(msg).to_bytes(config.HEADER_LEN, config.ENDIAN) + bytes(msg, "utf-8")
+        # connect.write_conn(conn, byte_msg)
+        # # dprint("send_raw_msg : %s\n\t%s" % (msg, byte_msg))
+
         if msg is None:
             msg = self.msg
-        byte_msg = len(msg).to_bytes(config.HEADER_LEN, config.ENDIAN) + bytes(msg, "utf-8")
-        connect.write_conn(conn, byte_msg)
-        # dprint("send_raw_msg : %s\n\t%s" % (msg, byte_msg))
+        des_msg = des.encrypt(bytes(msg, "utf-8"))
+        byte_header = len(des_msg).to_bytes(config.HEADER_LEN, config.ENDIAN)
+
+        connect.write_conn(conn, byte_header + des_msg)
+
+        # des_header = des.encrypt(byte_header)
+        # connect.write_conn(conn, des_header + des_msg)
+        # print("send_raw_msg: %s->%s" % (msg, des_header + des_msg))
+        # return
 
     @exception_log
     def read_json(self, conn):

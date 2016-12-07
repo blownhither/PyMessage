@@ -127,3 +127,7 @@ class Users:
 
 class InvalidUserIDException(Exception):
     pass
+
+
+class InvalidGroupIDException(Exception):
+    pass

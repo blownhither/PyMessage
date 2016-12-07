@@ -5,3 +5,4 @@
 !push.sh
 !*.sh
 /network/log/all.log
+*.db

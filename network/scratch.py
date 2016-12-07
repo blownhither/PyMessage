@@ -9,6 +9,7 @@ from threading import Thread, Event
 import time
 import json
 import asyncio
+import sqlite3
 
 #
 # def pr(a):
@@ -79,7 +80,7 @@ def save_img(byte_msg, path):
 
 def img_from_srial(byte_img):
     s = Struct().pack(byte_img)
-    img.show()
+    # img.show()
 
 
     Image.frombytes()
@@ -114,4 +115,8 @@ if __name__ == "__main__":
     # main_thread = eventlet.spawn(accept_any, server)
     # main_thread.wait()
 
-
+    db = sqlite3.connect("test.db")
+    db.execute("create table test (a int primary key, b int);")
+    db.execute("insert into test values (3, 5);")
+    cursor = db.execute("select * from test;")
+    cursor.fetchall()

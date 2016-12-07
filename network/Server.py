@@ -65,8 +65,14 @@ class Server(Thread):
                     continue
 
                 elif t == pc.CREATE_GROUP:
-                    self._add_group(d.get[fd["g"]])
-                    # TODO:  ?!
+                    group_name = d.get(fd["x"])
+                    if group_name is None:
+                        log_str = "Corrupted CREATE_GROUP frame missing group_name"
+                        logging.error(log_str)
+                        dprint(log_str)
+                    group_id = self._add_group(name=group_name)
+                    p.confirm_add_group(conn, group_id, group_name)
+                    continue
 
                 elif t == pc.GET_GROUP_MEMBERS:
                     group_id = d.get(fd["g"])
@@ -123,15 +129,20 @@ class Server(Thread):
         self._add_group(group_id)
 
     # Throws Exception
-    def _add_group(self, group_id, name="Temporary Group", desc=""):
-        if self._group_pool.get(group_id) is not None:
+    def _add_group(self, group_id=None, name="Temporary Group", desc=""):
+        if group_id is None:
+            while True:
+                group_id = random.randint(config.GROUP_ID_MIN, config.GROUP_ID_MAX)
+                if self._group_pool.get(group_id) is None:
+                    break
+        elif self._group_pool.get(group_id) is not None:
             warning_str = "Re-create group_id / groupId collision on " + str(group_id)
             dprint(warning_str)
             logging.warning(warning_str)
             return False
         g = Group(group_id=group_id, desc=desc, name=name)
         self._group_pool[group_id] = g
-        return g
+        return group_id
 
     def _broadcast(self, conn, datagram):
         group_id = datagram.get(fd["g"])

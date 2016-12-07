@@ -145,6 +145,15 @@ class Client(Thread):
                 self.user_id = id
                 self.user_id_event.set()
 
+            elif t == pc.CONFIRM_CREATE_GROUP:
+                group_name = d.get(fd["x"])
+                group_id = d.get(fd["g"])
+                if group_id is None or group_name is None:
+                    log_str = "Corrupted CONFIRM_CREATE_GROUP frame, missing GROUP_ID or _NAME"
+                    logging.error(log_str)
+                    dprint(log_str)
+                self._put_buffer((group_id, group_name), pc.CONFIRM_CREATE_GROUP)
+
             else:
                 log_str = "Unrecognized frame type"
                 dprint(log_str)
@@ -262,6 +271,16 @@ class Client(Thread):
         l = self._fetch_buffer(pc.RETURN_GROUP_MEMBERS)
         return l
 
+    def add_group(self, group_name):
+        p = Pmd()
+        p.request_add_group(self.server, self.user_id, group_name)
+        group_id, group_name2 = self._fetch_buffer(pc.CONFIRM_CREATE_GROUP)
+        if group_name != group_name2:
+            log_str = "add_group: Group renamed arbitrarily %s->%s" % (group_name, group_name2)
+            logging.warning(log_str)
+            dprint(log_str)
+        return group_id
+
     def join_group(self, group_id, alias=None):
         if self.user_id is None:
             self.get_user_id()
@@ -284,10 +303,15 @@ if __name__ == "__main__":
     client = Client()
     client.start()
     print("This is " + str(client.get_user_id()))
-    print(client.join_group(8848, "mzy2"))  # Rename
+    # print(client.join_group(8848, "mzy2"))  # Rename
+
+    group_id = client.add_group("BILIBILI")
+    print(client.get_groups())
+    print(client.join_group(group_id, "mzy"))
+
     while True:
         msg = "Hello No." + str(random.randint(1000, 2000))
-        client.put_msg(msg, 8848)
+        client.put_msg(msg, group_id)
         ml = None
         while ml is None:
             ml = client.read_msg(blocking=False)

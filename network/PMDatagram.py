@@ -199,6 +199,26 @@ class PMDatagram:
         }
         self.send_json(conn, d)
 
+    """ Methods about Adding Groups
+    """
+    def request_add_group(self, conn, user_id, group_name):
+        d = {
+            fd[0]: pc.CREATE_GROUP,
+            fd[1]: -1,
+            fd[2]: -1,
+            fd["x"]: group_name,
+            fd["u"]: user_id,
+        }
+        self.send_json(conn, d)
+
+    def confirm_add_group(self, conn, group_id, group_name):
+        d = {
+            fd[0]: pc.CONFIRM_CREATE_GROUP,
+            fd[1]: group_id,
+            fd[2]: -1,
+            fd["x"]: group_name
+        }
+        self.send_json(conn, d)
 
 class PMTypeException(Exception):
     pass

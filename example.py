@@ -7,8 +7,10 @@ from network.Client import Client
     Client          -> (constructor)
     .start:         ->
     .get_user_id:   -> user_id
+    .add_group:     group_name -> group_id
     .get_groups:    -> [(group_id, name, n_members), ... ]
     .join_group:    group_id, in_group_alias -> confirmation
+    .get_group_members:         group_id -> [(user_id, user_name, user_desc), ...]
     .put_msg:       text_msg, target_group_id
     .read_msg       blocking -> [{msg=, groupId=, userId=, time=}, ...]
                         when blocking=False, returns False if no message

@@ -4,12 +4,12 @@ import random
 from threading import Thread
 
 import network.config as config
+import pub_config as pc
 from network.util import *
 from network.PMDatagram import PMDatagram as Pmd
 from network.Group import Group
-import pub_config as pc
 from pub_config import FIELDS as fd
-
+from network.Recorder import Recorder
 
 class Server(Thread):
     def __init__(self):
@@ -18,6 +18,8 @@ class Server(Thread):
         self._id_pool = {}       # [user_id] => conn
         # self._idle_pool = {}
         self._main_thread = None
+
+        self._recorder = Recorder()
 
         self._server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._server.settimeout(0.5)
@@ -212,6 +214,30 @@ class Server(Thread):
         p.return_user_id(conn, user_id)
         return user_id
 
+    @exception_log
+    def _record_msg(self, datagram):
+        # user_id = datagram.get(fd["u"])
+        # user_name = datagram.get(fd["n"])
+        # group_id = datagram.get(fd["g"])
+        # text = datagram.get(fd["x"])
+        # timestamp = datagram.get(fd["t"])
+        # msg_id = datagram.get(fd["m"])
+        attrs = ['u', 'n', 'g', 'x', 't', 'm']
+        t = tuple(map(datagram.get, attrs))
+        if any([x is None for x in t]):
+            log_str = "'None' exists in recorded msg" + str(t)
+            logging.warning(log_str)
+            dprint(log_str)
+        self._recorder.add_history(*t)
+        # self._recorder.add_history(user_id, user_name, group_id, text, timestamp, msg_id)
+
+    @exception_log
+    def _fetch_history_id(self, group_id, msg_id_a, msg_id_b):
+        return self._recorder.fetch_history_id(group_id, msg_id_a, msg_id_b)
+
+    @exception_log
+    def _fetch_history_time(self, group_id, timestamp_a, timestamp_b):
+        return self._recorder.fetch_history_time(group_id, timestamp_a, timestamp_b)
 
 if __name__ == "__main__":
     s = Server()

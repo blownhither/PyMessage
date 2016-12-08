@@ -269,6 +269,18 @@ class PMDatagram:
         }
         self.send_json(conn, d)
 
+    """Methods about sending files (including images)"""
+    def send_file(self, conn, group_id, user_id, file_name, file_content, msg_id):
+        d = {
+            fd[0]: pc.SEND_FILE,
+            fd[1]: group_id,
+            fd[2]: msg_id,
+            fd[3]: encode_timestamp(),
+            fd["f"]: file_name,
+            fd["ft"]: file_content,
+            fd["u"]: user_id,
+        }
+        self.send_json(conn, d)
 
 class PMTypeException(Exception):
     pass

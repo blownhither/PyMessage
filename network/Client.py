@@ -14,7 +14,6 @@ from network.PMDatagram import *
 from network.util import *
 
 
-
 class Client(Thread):
     def __init__(self):
         Thread.__init__(self)

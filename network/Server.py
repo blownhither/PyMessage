@@ -109,6 +109,11 @@ class Server(Thread):
                     print("Assigned User ID " + str(user_id))
                     continue
 
+                elif t == pc.REQUEST_QUIT_GROUP:
+                    group_id = d.get(fd["g"])
+                    user_id = d.get(fd["u"])
+                    self.quit_group(conn, group_id, user_id)
+
                 else:
                     log_str = " Unrecognized frame type " + str(t)
                     dprint(log_str)
@@ -124,6 +129,19 @@ class Server(Thread):
             logging.warning(warning_str)
             return False
         return group.add_user(conn=conn, user_id=user_id, user_name=alias)
+
+    def quit_group(self, conn, group_id, user_id):
+        g = self._group_pool.get(group_id)
+        if g is None:
+            log_str = "quit_group: Group not found " + str(group_id)
+            logging.warning(log_str)
+            dprint(log_str)
+            return False
+        g.remove_user(user_id)
+        p = Pmd()
+        p.confirm_quit_group(conn, group_id)
+        return True
+
 
     def add_group(self, group_id):
         self._add_group(group_id)

@@ -154,6 +154,14 @@ class Client(Thread):
                     dprint(log_str)
                 self._put_buffer((group_id, group_name), pc.CONFIRM_CREATE_GROUP)
 
+            elif t == pc.CONFIRM_QUIT_GROUP:
+                group_id = d.get(fd["g"])
+                if group_id is None:
+                    log_str = "Corrupted CONFIRM_QUIT_GROUP frame, missing GROUP_ID"
+                    logging.error(log_str)
+                    dprint(log_str)
+                self._put_buffer(group_id, pc.CONFIRM_QUIT_GROUP)
+
             else:
                 log_str = "Unrecognized frame type"
                 dprint(log_str)
@@ -297,6 +305,16 @@ class Client(Thread):
                 logging.error(log_str)
                 return False            # Temporary
 
+    def quit_group(self, group_id):
+        p = Pmd()
+        p.request_quit_group(self.server, group_id, self.user_id)
+        group_id_confirm = self._fetch_buffer(pc.CONFIRM_QUIT_GROUP)
+        if group_id != group_id_confirm:
+            log_str = "quit_group: feedback fails to match"
+            logging.error(log_str)
+            dprint(log_str)
+            return False
+        return True
 
 
 if __name__ == "__main__":

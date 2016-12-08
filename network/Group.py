@@ -53,9 +53,6 @@ class Group:
             logging.exception(log_str)
             return False
 
-    def remove_user(self):
-        # TODO: ?
-        pass
 
     def add_msg(self, conn, datagram):
         user_id = datagram["u"]
@@ -75,6 +72,16 @@ class Group:
 
     def group_info(self):
         return self.group_id, self.name, self._users.user_count()
+
+    def remove_user(self, user_id):
+        user = self._users[user_id]
+        if user is None:
+            log_str = "Quit group: requester not exist "
+            logging.error(log_str)
+            dprint(log_str)
+            return False
+        self._users.remove_user(user_id)
+        return True
 
 
 class Users:

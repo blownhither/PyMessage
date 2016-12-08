@@ -214,6 +214,25 @@ class PMDatagram:
         }
         self.send_json(conn, d)
 
+    @exception_log
+    def request_quit_group(self, conn, group_id, user_id):
+        d = {
+            fd[0]: pc.REQUEST_QUIT_GROUP,
+            fd[1]: group_id,
+            fd[2]: -1,
+            fd["u"]: user_id,
+        }
+        self.send_json(conn, d)
+
+    @exception_log
+    def confirm_quit_group(self, conn, group_id):
+        d = {
+            fd[0]: pc.CONFIRM_QUIT_GROUP,
+            fd[1]: group_id,
+            fd[2]: -1,
+        }
+        self.send_json(conn, d)
+
     """ Methods about text message
     """
     @exception_log
@@ -249,6 +268,7 @@ class PMDatagram:
             fd["x"]: group_name
         }
         self.send_json(conn, d)
+
 
 class PMTypeException(Exception):
     pass

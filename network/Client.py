@@ -41,25 +41,31 @@ class Client(Thread):
         # self.thread_pool = eventlet.GreenPool(2)
         # self.thread_pool.spawn(self._read_routine)
         # self.thread_pool.spawn(self._send_routine)
-
+        self.thread_pool = None
+        self.send_thread = None
+        self.read_thread = None
         # self.read_thread = eventlet.spawn(self._read_routine)
         # self.send_thread = eventlet.spawn(self._send_routine)
         self._request_user_id()
 
 
     def __del__(self):
-        self.server.close()
+        self.close()
 
     def close(self):
         self.server.close()
 
     """override Thread.run"""
     def run(self):
-        read_thread = eventlet.spawn(self._read_routine)
-        send_thread = eventlet.spawn(self._send_routine)
-        send_thread.wait()
-        read_thread.wait()
-        # self.thread_pool.waitall()
+        # self.read_thread = eventlet.spawn(self._read_routine)
+        # self.send_thread = eventlet.spawn(self._send_routine)
+        self.thread_pool = eventlet.GreenPool(3)
+        self.thread_pool.spawn(self._read_routine)
+        self.thread_pool.spawn(self._send_routine)
+        # self.send_thread.wait()
+        # self.read_thread.wait()
+        self.thread_pool.waitall()
+
 
     """Network connections """
     def _connect(self):
@@ -328,7 +334,10 @@ if __name__ == "__main__":
     print(client.get_groups())
     print(client.join_group(group_id, "mzy"))
 
-    while True:
+    count = 3
+
+    while count > 0:
+        count -= 1
         msg = "Hello No." + str(random.randint(1000, 2000))
         client.put_msg(msg, group_id)
         ml = None
@@ -336,9 +345,12 @@ if __name__ == "__main__":
             ml = client.read_msg(blocking=False)
         for x in ml:
             print("%s(%s):\n\t%s" % (x["userName"], str(x["userId"]), str(x["msg"])))
-        time.sleep(3)
-    client.close()
+        time.sleep(1.5)
 
+    if client.quit_group(group_id):
+        print("Quited group")
+
+    client.close()
     # eventlet.spawn(client.start)
     # eventlet.spawn(main)
 

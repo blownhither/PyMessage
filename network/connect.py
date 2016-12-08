@@ -21,7 +21,13 @@ def read_conn_tuple(conn, length):
             eventlet.sleep(config.SLEEP)
         except ConnectionError as e:
             dprint(str(eventlet.getcurrent()) + " exit")
-            eventlet.kill(eventlet.getcurrent())
+            try:
+                eventlet.kill(eventlet.getcurrent())
+            except Exception as e:   # if this not something spawned
+                log_str = "Cannot kill thread " + str(e)
+                logging.info(log_str)
+                dprint(log_str)
+                pass
     return byte_msg, addr
 
 

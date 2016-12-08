@@ -137,7 +137,9 @@ class Server(Thread):
             logging.warning(log_str)
             dprint(log_str)
             return False
-        g.remove_user(user_id)
+        success = g.remove_user(user_id)
+        if success is False:
+            group_id = -1           # return warning
         p = Pmd()
         p.confirm_quit_group(conn, group_id)
         print("User %s quit group %s" % (str(user_id), str(group_id)))

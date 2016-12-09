@@ -167,6 +167,14 @@ class Client(Thread):
                     dprint(log_str)
                 self._put_buffer(group_id, pc.CONFIRM_QUIT_GROUP)
 
+            elif t == pc.RETURN_HISTORY:
+                l = d.get(fd["l"])
+                if l is None:
+                    log_str = "Corrupted RETURN_HISTORY frame, missing LIST"
+                    logging.warning(l)
+                    dprint(l)
+                self._put_buffer(l, pc.RETURN_HISTORY)
+
             else:
                 log_str = "Unrecognized frame type"
                 dprint(log_str)
@@ -321,6 +329,17 @@ class Client(Thread):
             return False
         return True
 
+    def request_history_id(self, group_id, msg_id_a, msg_id_b):
+        p = Pmd()
+        p.request_history_id(self.server, group_id, msg_id_a, msg_id_b)
+        l = self._fetch_buffer(pc.RETURN_HISTORY)
+        return l
+
+    def request_history_time(self, group_id, timestamp_a, timestamp_b):
+        p = Pmd()
+        p.request_history_time(self.server, group_id, timestamp_a, timestamp_b)
+        l = self._fetch_buffer(pc.RETURN_HISTORY)
+        return l
 
 if __name__ == "__main__":
     # r = random.randint(0, 1000)
@@ -333,7 +352,7 @@ if __name__ == "__main__":
     print(client.get_groups())
     print(client.join_group(group_id, "mzy"))
 
-    count = 3
+    count = 1
 
     while count > 0:
         count -= 1
@@ -345,6 +364,8 @@ if __name__ == "__main__":
         for x in ml:
             print("%s(%s):\n\t%s" % (x["userName"], str(x["userId"]), str(x["msg"])))
         time.sleep(1.5)
+
+    print(client.request_history_id(group_id, -8, 888999))
 
     if client.quit_group(group_id):
         print("Quited group")

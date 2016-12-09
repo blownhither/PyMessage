@@ -282,6 +282,33 @@ class PMDatagram:
         }
         self.send_json(conn, d)
 
+    """Methods about histroy"""
+    def request_history_id(self, conn, group_id, msg_id_a, msg_id_b):
+        d = {
+            fd[0]: pc.REQUEST_HISTORY,
+            fd[1]: group_id,
+            fd[2]: msg_id_a,
+            fd["x"]: msg_id_b,
+        }
+        self.send_json(conn, d)
+
+    def request_history_time(self, conn, group_id, timestamp_a, timestamp_b):
+        d = {
+            fd[0]: pc.REQUEST_HISTORY,
+            fd[1]: group_id,
+            fd[3]: timestamp_a,
+            fd["x"]: timestamp_b,
+        }
+        self.send_json(conn, d)
+
+    def send_history(self, conn, group_id, l):
+        d = {
+            fd[0]: pc.RETURN_HISTORY,
+            fd[1]: group_id,
+            fd["l"]: l,
+        }
+        self.send_json(conn, d)
+
 class PMTypeException(Exception):
     pass
 

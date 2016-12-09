@@ -19,7 +19,7 @@ class Server(Thread):
         # self._idle_pool = {}
         self._main_thread = None
 
-        self._recorder = Recorder()
+        self._recorder = None
 
         self._server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._server.settimeout(0.5)
@@ -29,6 +29,7 @@ class Server(Thread):
         dprint("Connected")
 
     def run(self):
+        self._recorder = Recorder()
         self._main_thread = eventlet.spawn(self._accept_any)
         self._main_thread.wait()
 
@@ -103,6 +104,7 @@ class Server(Thread):
                 elif t == pc.CLIENT_SEND_MSG:
                     self._broadcast(conn, d)
                     print(d["u"])
+                    self._record_msg(d)
                     # TODO: deal with ret
                     continue
 
@@ -115,6 +117,11 @@ class Server(Thread):
                     group_id = d.get(fd["g"])
                     user_id = d.get(fd["u"])
                     self.quit_group(conn, group_id, user_id)
+
+                elif t == pc.REQUEST_HISTORY:
+                    l = self.fetch_history(d)
+                    p.send_history(conn, d[fd['g']], l)
+                    continue
 
                 else:
                     log_str = " Unrecognized frame type " + str(t)
@@ -238,6 +245,13 @@ class Server(Thread):
     @exception_log
     def _fetch_history_time(self, group_id, timestamp_a, timestamp_b):
         return self._recorder.fetch_history_time(group_id, timestamp_a, timestamp_b)
+
+    @exception_log
+    def fetch_history(self, datagram):
+        if datagram.get(fd["t"]) is not None:
+            return self._fetch_history_time(datagram[fd["g"]], datagram[fd["t"]], datagram[fd["x"]])
+        else:
+            return self._fetch_history_id(datagram[fd["g"]], datagram[fd["m"]], datagram[fd["x"]])
 
 if __name__ == "__main__":
     s = Server()

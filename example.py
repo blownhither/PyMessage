@@ -16,6 +16,10 @@ from network.Client import Client
     .read_msg       blocking -> [{msg=, groupId=, userId=, time=}, ...]
                         when blocking=False, returns False if no message
 
+    .request_history_id:    group_id, msg_id_a, msg_id_b
+                            -> [(uid, uname, gid, text, timestamp, msgid), ... ]
+    .request_history_time:  group_id, timestamp_a, timestamp_b -> [(), ...]
+
 """
 if __name__ == "__main__":
     client = Client()

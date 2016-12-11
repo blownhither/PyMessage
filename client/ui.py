@@ -33,6 +33,7 @@ class MainWidget(QWidget):
         super().__init__()
         self.username = 'hello@gmail.com'
         self.initUI()
+        self.__opened_groups__ = set()
 
     def initUI(self):
         # self.setGeometry(300, 100, 600, 600)
@@ -44,10 +45,17 @@ class MainWidget(QWidget):
 
         # this hbox is for "New group" button and "Get groups" button
         self.hbox1 = QHBoxLayout()
-        self.new_group_btn = QPushButton('New Group')
-        self.get_groups_btn = QPushButton('Get My Groups')
-        self.hbox1.addWidget(self.new_group_btn)
-        self.hbox1.addWidget(self.get_groups_btn)
+        self.username_input = QLineEdit()
+        self.username_input.setText(self.username)
+        self.change_username_btn = QPushButton('修改昵称')
+        self.change_username_btn.clicked.connect(self.change_username)
+        self.hbox1.addWidget(self.username_input)
+        self.hbox1.addWidget(self.change_username_btn)
+
+        # self.new_group_btn = QPushButton('New Group')
+        # self.get_groups_btn = QPushButton('Get My Groups')
+        # self.hbox1.addWidget(self.new_group_btn)
+        # self.hbox1.addWidget(self.get_groups_btn)
 
         # this hbox is for "Enter group"
         self.hbox2 = QHBoxLayout()
@@ -102,6 +110,10 @@ class MainWidget(QWidget):
             return False
         return True
 
+    def change_username(self):
+        if self.username_input.text() != '':
+            self.username = self.username_input.text()
+
     def refresh_group_list(self):
         """
         .get_groups:    -> [(group_id, name, n_members), ... ]
@@ -152,8 +164,13 @@ class MainWidget(QWidget):
         file_menu.addAction(exitAction)
 
     def enterGroup(self):
-        if self.group_id_edit.text() == '':
+        print(self.__opened_groups__)
+        print(self.seleted_group.group_id)
+        if self.seleted_group.group_id not in self.__opened_groups__:
+            self.__opened_groups__.add(self.seleted_group.group_id)
+        else:
             return
+
         # self.chat = Chat_Box.create_chat_box(username=self.username, group_id=self.group_id.text())
         # if self.chat.sock is None:
         #     self.chat = None
@@ -187,7 +204,6 @@ class Chat_Box(QWidget):
 
     def __init__(self, username='Me', group_id=None, group_name=None, client=None):
         super().__init__()
-        self.__opened_groups__.add(group_id)
         self.username = username
         self.group_id = group_id
         self.group_name = group_name
@@ -293,7 +309,6 @@ class Chat_Box(QWidget):
         self.input_box.setText('')
 
     def __del__(self):
-        self.__opened_groups__.remove(self.group_id)
         self.client.close()
 
 

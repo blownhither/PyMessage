@@ -1,11 +1,11 @@
-# import eventlet
+import eventlet
 # import socket
 # from network.Group import Group
 # from multiprocessing.pool import Pool
 from struct import Struct
 from PIL import Image
 import base64
-from threading import Thread, Event
+from threading import Thread, Event, Lock
 import time
 import json
 import asyncio
@@ -88,15 +88,20 @@ def img_from_srial(byte_img):
 
 
 class MyThread(Thread):
-    def __init__(self, signal):
+    def __init__(self):
         Thread.__init__(self)
-        self.signal = signal
+        self.spawn_lock = Lock()
 
     def run(self):
+        self.spawn_lock.acquire()
+        t = eventlet.spawn(self.p)
+        self.spawn_lock.release()
+        t.wait()
+
+    def p(self):
         while True:
-            print("Thread started")
-            # self.signal.wait()
-            time.sleep(0.5)
+            print("a")
+            eventlet.sleep(1)
 
 
 class T():
@@ -137,10 +142,18 @@ def send_raw_msg(msg):
     return des_header + des_msg
 
 if __name__ == "__main__":
-    while True:
-        raw = send_raw_msg("Hello")
-        ret = read_raw_msg(raw)
-        print(ret)
+    # while True:
+    #     raw = send_raw_msg("Hello")
+    #     ret = read_raw_msg(raw)
+    #     print(ret)
+
+    t = MyThread()
+    t.start()
+    t1 = MyThread()
+    t1.start()
+    # eventlet.sleep(0)
+    # t.join()
+    # t1.join()
 
     # server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # server.settimeout(0.5)

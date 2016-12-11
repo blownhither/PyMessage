@@ -67,3 +67,16 @@ def decode_timestamp(msg):
 
 def dprint(*args):
     print(*args, flush=True)
+
+
+def serialize_file(filename):
+    l = None
+    with open(filename, "rb") as f:
+        l = f.read()
+    return l
+
+
+def form_file(filename, f_str):
+    l = None
+    with open(filename, "bw") as f:
+        f.write(f_str)

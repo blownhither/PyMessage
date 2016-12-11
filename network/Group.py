@@ -44,6 +44,11 @@ class Group:
         conns = self._users.all_conns()
         self._thread_pool.imap(p.send_json, conns)
 
+    def broadcast_file(self, datagram, append):
+        p = Pmd()
+        conns = self._users.all_conns()
+        self._thread_pool.imap(p.read_seg_file, datagram, append)
+
     def add_user(self, conn, user_id, user_name, user_desc=None):
         try:
             return self._users.add_user(conn, user_id, user_name, user_desc)

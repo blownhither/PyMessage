@@ -123,6 +123,15 @@ class Server(Thread):
                     p.send_history(conn, d[fd['g']], l)
                     continue
 
+                # TODO:
+                # elif t == pc.SEND_FILE:
+                #     append_l = d.get(fd["l"])
+                #     if append_l is None:
+                #         raise Exception("Unrecognized append_l")
+                #     l = p.read_seg_file(conn, append_l)
+                #     d[fd["m"]] =
+                #     p.append_json()
+
                 else:
                     log_str = " Unrecognized frame type " + str(t)
                     dprint(log_str)

@@ -18,6 +18,7 @@ SEND_FILE = 15
 REQUEST_HISTORY = 16
 RETURN_HISTORY = 17
 
+
 # PMDatagram Fields
 FIELDS = {
     "Type": "T", "T": "T", 0: "T",          # necessary
@@ -26,8 +27,8 @@ FIELDS = {
     "Time": "t", "t": "t", 3: "t",
     "Text": "x", "x": "x", 4: "x",
     "FileName": "f", "f": "f",
-    "FileText": "ft", "ft": "ft",
-    "List": "l", "l": "l",
+    "FileText": "ft", "ft": "ft",   # seg
+    "List": "l", "l": "l",          # or append length
     "UserId": "u", "u": "u",
     "UserName": "n", "n": "n",
     # set to -1 when invalid but necessary

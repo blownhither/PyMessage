@@ -175,6 +175,14 @@ class Client(Thread):
                     dprint(l)
                 self._put_buffer(l, pc.RETURN_HISTORY)
 
+            elif t == pc.SEND_FILE:
+                append_l = d.get(fd["l"])
+                l = p.read_seg_file(self.server, append_l)
+                save_name = "./data/" + str(d.get(fd["m"])) + "+" + str(d.get(fd["f"]))
+                f = open(save_name, "ab")
+                f.write(l)
+                f.close()
+
             else:
                 log_str = "Unrecognized frame type"
                 dprint(log_str)
@@ -365,10 +373,15 @@ if __name__ == "__main__":
             print("%s(%s):\n\t%s" % (x["userName"], str(x["userId"]), str(x["msg"])))
         time.sleep(1.5)
 
-    print(client.request_history_id(group_id, -8, 888999))
+    # print(client.request_history_id(group_id, -8, 888999))
+    # client.put_msg(serialize_file("network/a.png"), group_id)
+    # l = client.read_msg(blocking=True)
+    # form_file("b.png", l)
+    # if client.quit_group(group_id):
+    #     print("Quited group")
 
-    if client.quit_group(group_id):
-        print("Quited group")
+    p = Pmd()
+    p.send_seg_file(client.server,group_id, client.user_id,-1,"a.png",serialize_file("network/a.png"))
 
     client.close()
     # eventlet.spawn(client.start)

@@ -6,3 +6,4 @@
 !*.sh
 /network/log/all.log
 *.db
+/data/

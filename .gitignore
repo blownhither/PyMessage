@@ -7,3 +7,4 @@
 /network/log/all.log
 *.db
 /data/
+!/network/Recorder.py

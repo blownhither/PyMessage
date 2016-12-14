@@ -288,7 +288,7 @@ class PMDatagram:
         self.send_json(conn, d)
 
     """Methods about sending files (including images)"""
-    def send_file(self, conn, group_id, user_id, file_name, file_content, msg_id):
+    def send_file(self, conn, group_id, user_id, file_name, file_content, msg_id, user_name):
         d = {
             fd[0]: pc.SEND_FILE,
             fd[1]: group_id,
@@ -298,7 +298,7 @@ class PMDatagram:
             fd["f"]: file_name,
             fd["ft"]: None,
             fd["u"]: user_id,
-
+            fd["n"]: user_name,
         }
         raw_msg = bytes(self.json_decoder.encode(d), 'utf-8')
         des_msg = des.encrypt(raw_msg)

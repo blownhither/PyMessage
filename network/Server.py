@@ -135,7 +135,7 @@ class Server(Thread):
                         dprint(padding)
                     dprint("Server received file len = %d (whole +%d)" % (len(file_content), pad_len))
                     g = self._group_pool[d[fd["g"]]]
-                    g.broadcast_file(d[fd["u"]], d[fd["f"]], file_content, -1)
+                    g.broadcast_file(d[fd["u"]], d[fd["f"]], file_content, -1, g.get_name(d[fd["u"]]))
                     # p.send_file(conn, d[fd["g"]], d[fd["u"]], d["f"], file_content, -1)
                     # # self._broadcast(conn, d)
                     # print("Broadcast file : len = " + str(len(file_content)))

@@ -192,7 +192,7 @@ class Client(Thread):
                     fd["t"]: -1,
                     fd["x"]: save_name,
                     fd["u"]: d[fd["u"]],
-                    fd["n"]: None,
+                    fd["n"]: d[fd["n"]],
                     "isFile": True,
                 }
                 self._add_read_queue(d_)
@@ -369,7 +369,7 @@ class Client(Thread):
 
     def send_file(self, group_id, path, file_name):
         p = Pmd()
-        p.send_file(self.server, group_id, self.user_id, file_name, serialize_file(path), -1)
+        p.send_file(self.server, group_id, self.user_id, file_name, serialize_file(path), -1, self.name)
 
 if __name__ == "__main__":
     # r = random.randint(0, 1000)

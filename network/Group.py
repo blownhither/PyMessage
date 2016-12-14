@@ -22,6 +22,7 @@ class Group:
         self.desc = desc
         self.name = name
         self._users = Users()       # TODO: queue need lock?
+        self.user = self._users
         self._broadcast_queue = []  # JSON Datagrams
 
         self._thread_pool = eventlet.GreenPool(config.POOL_SIZE)
@@ -45,11 +46,11 @@ class Group:
         conns = self._users.all_conns()
         self._thread_pool.imap(p.send_json, conns)
 
-    def broadcast_file(self, user_id, file_name, file_content, msg_id):
+    def broadcast_file(self, user_id, file_name, file_content, msg_id, user_name):
         p = Pmd()
         conns = self._users.all_conns()
         for c in conns:
-            self._thread_pool.spawn(p.send_file, c, self.group_id, user_id, file_name, file_content, msg_id)
+            self._thread_pool.spawn(p.send_file, c, self.group_id, user_id, file_name, file_content, msg_id, user_name)
 
         # onn, group_id, user_id, file_name, file_content, msg_id
 
@@ -79,6 +80,9 @@ class Group:
         datagram[fd["Time"]] = encode_timestamp()
         self._broadcast(datagram)
         # self._broadcast_queue.append(datagram)
+
+    def get_name(self, user_id):
+        return self._users[user_id][1]
 
     """ Format [(user_id, user_name, user_desc), ... ]"""
     def user_list(self):

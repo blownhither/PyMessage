@@ -298,16 +298,18 @@ class PMDatagram:
             fd["f"]: file_name,
             fd["ft"]: None,
             fd["u"]: user_id,
+
         }
         raw_msg = bytes(self.json_decoder.encode(d), 'utf-8')
         des_msg = des.encrypt(raw_msg)
         byte_header = len(des_msg).to_bytes(config.HEADER_LEN, config.ENDIAN)
         whole = byte_header + des_msg + file_content
         pad_len = 8 - len(file_content) % 8
+        print("%d, %d, %d" % (len(byte_header), len(des_msg), len(file_content)))
         if pad_len == 8:
             pad_len = 0
         connect.write_conn(conn, whole + bytes(pad_len))
-        print("Sent file length is %d (whole msg %d, pad = %d)" % (len(file_content), len(whole + bytes(pad_len)), pad_len))
+        print("Sent file length is %d (whole msg %f*8, pad = %d)" % (len(file_content), len(whole + bytes(pad_len))/8.0, pad_len))
 
     """Methods about histroy"""
     def request_history_id(self, conn, group_id, msg_id_a, msg_id_b):

@@ -180,8 +180,8 @@ class Server(Thread):
         return True
 
 
-    def add_group(self, group_id):
-        self._add_group(group_id)
+    def add_group(self, group_id, name):
+        self._add_group(group_id, name)
 
     # Throws Exception
     def _add_group(self, group_id=None, name="Temporary Group", desc=""):
@@ -281,9 +281,9 @@ class Server(Thread):
 if __name__ == "__main__":
     s = Server()
     s.start()
-    s.add_group(8848)
-    s.add_group(7737)
-    s.add_group(6626)
+    s.add_group(8848, "East Asia")
+    s.add_group(7737, "North America")
+    s.add_group(6626, "Europe")
     print(s.get_group_info())
 
 

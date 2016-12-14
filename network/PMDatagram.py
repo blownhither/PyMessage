@@ -37,7 +37,7 @@ class PMDatagram:
         return msg_len
 
     @exception_log
-    def read_raw_msg(self, conn):
+    def read_raw_msg(self, conn, encode=True):
         # byte_len = connect.read_conn(conn, config.HEADER_LEN)
         # self.msg_len = self.parse_len(byte_len)
         # self.msg = str(connect.read_conn(conn, self.msg_len), "utf-8")
@@ -53,7 +53,10 @@ class PMDatagram:
         # print("msg_len : " + str(self.msg_len))
         des_msg = connect.read_conn(conn, self.msg_len)
         byte_msg = des.decrypt(des_msg)
-        self.msg = str(byte_msg, "utf-8")
+        if encode is True:
+            self.msg = str(byte_msg, "utf-8")
+        else:
+            self.msg = byte_msg
         # print("read_raw_msg : " + self.msg)
         return self.msg
 
@@ -67,7 +70,10 @@ class PMDatagram:
 
         if msg is None:
             msg = self.msg
-        des_msg = des.encrypt(bytes(msg, "utf-8"))
+        if not isinstance(msg, bytes):
+            des_msg = des.encrypt(bytes(msg, "utf-8"))
+        else:
+            des_msg = des.encrypt(msg)
         byte_header = len(des_msg).to_bytes(config.HEADER_LEN, config.ENDIAN)
 
         connect.write_conn(conn, byte_header + des_msg)
@@ -283,11 +289,20 @@ class PMDatagram:
             fd[1]: group_id,
             fd[2]: msg_id,
             fd[3]: encode_timestamp(),
+            fd[4]: len(file_content),
             fd["f"]: file_name,
-            fd["ft"]: file_content,
+            fd["ft"]: None,
             fd["u"]: user_id,
         }
-        self.send_json(conn, d)
+        raw_msg = bytes(self.json_decoder.encode(d), 'utf-8')
+        des_msg = des.encrypt(raw_msg)
+        byte_header = len(des_msg).to_bytes(config.HEADER_LEN, config.ENDIAN)
+        whole = byte_header + des_msg + file_content
+        pad_len = 8 - len(whole) % 8
+        if pad_len == 8:
+            pad_len = 0
+        connect.write_conn(conn, whole + bytes(pad_len))
+        print("Sent file length is %d (whole msg %d)" % (len(file_content), len(whole + bytes(pad_len))))
 
     """Methods about histroy"""
     def request_history_id(self, conn, group_id, msg_id_a, msg_id_b):
@@ -317,31 +332,32 @@ class PMDatagram:
         self.send_json(conn, d)
 
     """Send segmented file, {l:append_length, ft:segment_number(EOF=-1) } - binary_str"""
-    @exception_log
-    def send_seg_file(self, conn, group_id, user_id, msg_id, file_name, f_str):
-        d = {
-            fd[0]: pc.SEND_FILE,
-            fd[1]: group_id,
-            fd[2]: msg_id,
-            fd["u"]: user_id,
-            fd["f"]: file_name,
-        }
-        seg = 0
-        while len(f_str) > 0:
-            append_l = max(config.FILE_SEG_MAX, len(f_str))
-            append = f_str[: append_l]
-            if append_l < config.FILE_SEG_MAX:
-                seg = -1
-            d[fd["ft"]] = seg
-            d[fd["l"]] = append_l
-            seg += 1
-
-            self.append_json(conn, d, append)
-            f_str = f_str[append_l:]
-
-    @exception_log
-    def read_seg_file(self, conn, append_l):
-        return connect.read_conn(conn, append_l)
+    # @exception_log
+    # def send_seg_file(self, conn, group_id, user_id, msg_id, file_name, f_str):
+    #     d = {
+    #         fd[0]: pc.SEND_FILE,
+    #         fd[1]: group_id,
+    #         fd[2]: msg_id,
+    #         fd["u"]: user_id,
+    #         fd["f"]: file_name,
+    #     }
+    #     seg = 0
+    #     while len(f_str) > 0:
+    #         append_l = max(config.FILE_SEG_MAX, len(f_str))
+    #         append = f_str[: append_l]
+    #         if append_l < config.FILE_SEG_MAX:
+    #             seg = -1
+    #         d[fd["ft"]] = seg
+    #         d[fd["l"]] = append_l
+    #         seg += 1
+    #
+    #         self.append_json(conn, d, append)
+    #         f_str = f_str[append_l:]
+    #         print("seg : " + str(seg))
+    #
+    # @exception_log
+    # def read_seg_file(self, conn, append_l):
+    #     return connect.read_conn(conn, append_l)
 
 
 class PMTypeException(Exception):

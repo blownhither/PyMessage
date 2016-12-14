@@ -17,7 +17,8 @@ CONFIRM_QUIT_GROUP = 14
 SEND_FILE = 15
 REQUEST_HISTORY = 16
 RETURN_HISTORY = 17
-
+# SEND_SEG_FILE = 18
+# RECV_SEG_FILE = 19
 
 # PMDatagram Fields
 FIELDS = {
@@ -38,3 +39,4 @@ FIELDS = {
     2. In RETURN_GROUPS mode, List field will be [(group_id, name, n_members), ]
 
 """
+

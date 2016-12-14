@@ -3,6 +3,7 @@ import socket
 import random
 from threading import Thread
 
+import network.connect as connect
 import network.config as config
 import pub_config as pc
 from network.util import *
@@ -117,6 +118,7 @@ class Server(Thread):
                     group_id = d.get(fd["g"])
                     user_id = d.get(fd["u"])
                     self.quit_group(conn, group_id, user_id)
+                    continue
 
                 elif t == pc.REQUEST_HISTORY:
                     l = self.fetch_history(d)
@@ -124,6 +126,18 @@ class Server(Thread):
                     continue
 
                 # TODO:
+                elif t == pc.SEND_FILE:
+                    # file_content = p.read_raw_msg(conn, encode=False)
+                    file_content = connect.read_conn(conn, int(d["x"]))
+                    pad_len = 8 - len(file_content) % 8
+                    if pad_len != 8:
+                        padding = connect.read_conn(conn, pad_len)
+                        dprint(padding)
+                    dprint("Server received file len = %d (whole +%d)" % (len(file_content), pad_len))
+                    p.send_file(conn, d[fd["g"]], d[fd["u"]], d["f"], file_content, -1)
+                    # self._broadcast(conn, d)
+                    print("Broadcast file : len = " + str(len(file_content)))
+                    continue
                 # elif t == pc.SEND_FILE:
                 #     append_l = d.get(fd["l"])
                 #     if append_l is None:

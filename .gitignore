@@ -2,9 +2,11 @@
 
 !*.py
 !**/*.py
+!/**/*.py
 !push.sh
 !*.sh
 /network/log/all.log
 *.db
 /data/
 !/network/Recorder.py
+/data/*

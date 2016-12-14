@@ -65,7 +65,6 @@ class Client(Thread):
         # self.read_thread.wait()
         self.thread_pool.waitall()
 
-
     """Network connections """
     def _connect(self):
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -176,12 +175,16 @@ class Client(Thread):
                 self._put_buffer(l, pc.RETURN_HISTORY)
 
             elif t == pc.SEND_FILE:
-                append_l = d.get(fd["l"])
-                l = p.read_seg_file(self.server, append_l)
-                save_name = "./data/" + str(d.get(fd["m"])) + "+" + str(d.get(fd["f"]))
-                f = open(save_name, "ab")
-                f.write(l)
+                file_content = connect.read_conn(self.server, int(d[fd[4]]))
+                pad_len = 8 - len(file_content) % 8
+                if pad_len != 8:
+                    padding = connect.read_conn(self.server, pad_len)
+                    dprint(padding)
+                save_name = "./data/" + str(d.get(fd["f"]))
+                f = open(save_name, "wb")
+                f.write(file_content)
                 f.close()
+                print("saved file : len = " + str(len(file_content)))
 
             else:
                 log_str = "Unrecognized frame type"
@@ -381,8 +384,10 @@ if __name__ == "__main__":
     #     print("Quited group")
 
     p = Pmd()
-    p.send_seg_file(client.server,group_id, client.user_id,-1,"a.png",serialize_file("network/a.png"))
-
+    p.send_file(client.server, group_id, client.user_id, "a.png", serialize_file("network/a.png"), 123)
+    # p.send_seg_file(client.server,group_id, client.user_id,-1,"a.png",serialize_file("network/a.png"))
+    while True:
+        pass
     client.close()
     # eventlet.spawn(client.start)
     # eventlet.spawn(main)

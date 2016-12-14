@@ -33,6 +33,7 @@ def exception_log(func):
                       % (func.__name__, args, kwargs, str(e))
             print(log_str)
             logger.exception(log_str)
+            raise e     # TODO:
     return logged_func
 
 

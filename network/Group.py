@@ -5,6 +5,7 @@ import network.config as config
 from network.PMDatagram import PMDatagram as Pmd
 from network.util import *
 import pub_config as pc
+import network.connect as connect
 from pub_config import FIELDS as fd
 
 
@@ -44,10 +45,18 @@ class Group:
         conns = self._users.all_conns()
         self._thread_pool.imap(p.send_json, conns)
 
-    def broadcast_file(self, datagram, append):
+    def broadcast_file(self, user_id, file_name, file_content, msg_id):
         p = Pmd()
         conns = self._users.all_conns()
-        self._thread_pool.imap(p.read_seg_file, datagram, append)
+        for c in conns:
+            self._thread_pool.spawn(p.send_file, c, self.group_id, user_id, file_name, file_content, msg_id)
+
+        # onn, group_id, user_id, file_name, file_content, msg_id
+
+    # def broadcast_file(self, datagram, append):
+    #     p = Pmd()
+    #     conns = self._users.all_conns()
+    #     self._thread_pool.imap(p.read_seg_file, datagram, append)
 
     def add_user(self, conn, user_id, user_name, user_desc=None):
         try:

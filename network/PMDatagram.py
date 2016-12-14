@@ -2,10 +2,11 @@ import json
 import pyDes
 
 import pub_config as pc
-from pub_config import FIELDS as fd
 import network.config as config
 import network.connect as connect
+from pub_config import FIELDS as fd
 from network.util import *
+from network.Rsa import Rsa
 
 des = pyDes.des(config.DES_CODE, pad=" ")
 
@@ -77,6 +78,7 @@ class PMDatagram:
         byte_header = len(des_msg).to_bytes(config.HEADER_LEN, config.ENDIAN)
 
         connect.write_conn(conn, byte_header + des_msg)
+        # TODO: socket broken exception raised here, consider handling
 
         # des_header = des.encrypt(byte_header)
         # connect.write_conn(conn, des_header + des_msg)
@@ -131,11 +133,14 @@ class PMDatagram:
 
     @exception_log
     def return_user_id(self, conn, user_id):
+        r = Rsa()
+        des_key = r.rand_des_key()
         d = {
             fd[0]: pc.RETURN_ID,
             fd[1]: -1,
             fd[2]: -1,
             fd["u"]: user_id,
+            fd["t"]: des_key,
         }
         self.send_json(conn, d)
 
@@ -298,11 +303,11 @@ class PMDatagram:
         des_msg = des.encrypt(raw_msg)
         byte_header = len(des_msg).to_bytes(config.HEADER_LEN, config.ENDIAN)
         whole = byte_header + des_msg + file_content
-        pad_len = 8 - len(whole) % 8
+        pad_len = 8 - len(file_content) % 8
         if pad_len == 8:
             pad_len = 0
         connect.write_conn(conn, whole + bytes(pad_len))
-        print("Sent file length is %d (whole msg %d)" % (len(file_content), len(whole + bytes(pad_len))))
+        print("Sent file length is %d (whole msg %d, pad = %d)" % (len(file_content), len(whole + bytes(pad_len)), pad_len))
 
     """Methods about histroy"""
     def request_history_id(self, conn, group_id, msg_id_a, msg_id_b):

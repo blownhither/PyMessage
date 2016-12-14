@@ -180,11 +180,23 @@ class Client(Thread):
                 if pad_len != 8:
                     padding = connect.read_conn(self.server, pad_len)
                     dprint(padding)
-                save_name = "./data/" + str(d.get(fd["f"]))
+
+                save_name = "./data/" + str(d.get(fd["u"])) + str(d.get(fd["f"]))
                 f = open(save_name, "wb")
                 f.write(file_content)
                 f.close()
                 print("saved file : len = " + str(len(file_content)))
+                d_ = {
+                    fd['g']: d[fd["g"]],
+                    fd["m"]: -1,
+                    fd["t"]: -1,
+                    fd["x"]: save_name,
+                    fd["u"]: d[fd["u"]],
+                    fd["n"]: None,
+                    "isFile": True,
+                }
+                self._add_read_queue(d_)
+                dprint("added a file at " + save_name)
 
             else:
                 log_str = "Unrecognized frame type"
@@ -260,7 +272,10 @@ class Client(Thread):
             "userId": datagram[fd["u"]],
             "userName": datagram[fd["n"]],
             "time": datagram[fd["Time"]],
+            "isFile": False
         }
+        if datagram.get("isFile") is True:
+            d["isFile"] = True
         self.read_queue.append(d)
         self.read_event.set()
         self.read_lock.release()
@@ -390,9 +405,11 @@ if __name__ == "__main__":
     # p = Pmd()
     # p.send_file(client.server, group_id, client.user_id, "a.png", serialize_file("network/a.png"), 123)
     # p.send_seg_file(client.server,group_id, client.user_id,-1,"a.png",serialize_file("network/a.png"))
+
     while True:
-        pass
+        print(client.read_msg(blocking=True))
     client.close()
+
     # eventlet.spawn(client.start)
     # eventlet.spawn(main)
 

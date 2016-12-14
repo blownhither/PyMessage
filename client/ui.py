@@ -33,6 +33,7 @@ class MainWidget(QWidget):
         super().__init__()
         self.username = 'hello@gmail.com'
         self.initUI()
+        self.__opened_groups__ = set()
 
     def initUI(self):
         # self.setGeometry(300, 100, 600, 600)
@@ -44,10 +45,17 @@ class MainWidget(QWidget):
 
         # this hbox is for "New group" button and "Get groups" button
         self.hbox1 = QHBoxLayout()
-        self.new_group_btn = QPushButton('New Group')
-        self.get_groups_btn = QPushButton('Get My Groups')
-        self.hbox1.addWidget(self.new_group_btn)
-        self.hbox1.addWidget(self.get_groups_btn)
+        self.username_input = QLineEdit()
+        self.username_input.setText(self.username)
+        self.change_username_btn = QPushButton('修改昵称')
+        self.change_username_btn.clicked.connect(self.change_username)
+        self.hbox1.addWidget(self.username_input)
+        self.hbox1.addWidget(self.change_username_btn)
+
+        # self.new_group_btn = QPushButton('New Group')
+        # self.get_groups_btn = QPushButton('Get My Groups')
+        # self.hbox1.addWidget(self.new_group_btn)
+        # self.hbox1.addWidget(self.get_groups_btn)
 
         # this hbox is for "Enter group"
         self.hbox2 = QHBoxLayout()
@@ -102,6 +110,10 @@ class MainWidget(QWidget):
             return False
         return True
 
+    def change_username(self):
+        if self.username_input.text() != '':
+            self.username = self.username_input.text()
+
     def refresh_group_list(self):
         """
         .get_groups:    -> [(group_id, name, n_members), ... ]
@@ -152,15 +164,21 @@ class MainWidget(QWidget):
         file_menu.addAction(exitAction)
 
     def enterGroup(self):
-        if self.group_id_edit.text() == '':
+        print(self.__opened_groups__)
+        print(self.seleted_group.group_id)
+        if self.seleted_group.group_id not in self.__opened_groups__:
+            self.__opened_groups__.add(self.seleted_group.group_id)
+        else:
             return
+
         # self.chat = Chat_Box.create_chat_box(username=self.username, group_id=self.group_id.text())
         # if self.chat.sock is None:
         #     self.chat = None
         self.chats_pool[self.seleted_group.group_id] = Chat_Box(username=self.username,
                                                                 group_id=self.seleted_group.group_id,
-                                                                group_name=self.seleted_group.group_name)
-        self.chats_pool[self.seleted_group.group_id].client = self.client
+                                                                group_name=self.seleted_group.group_name,
+                                                                client=self.client)
+        # self.chats_pool[self.seleted_group.group_id].client = self.client
         self.client.join_group(group_id=self.seleted_group.group_id, alias=self.username)
 
         # if self.chat is not None:
@@ -174,11 +192,6 @@ class MainWidget(QWidget):
         #     msg.exec_()
         #     self.group_id.setText('')
 
-    def refresh_friend_list(self):
-        # timer = QTimer()
-        # timer.timeout.
-        pass
-
 
 class Chat_Box(QWidget):
     __opened_groups__ = set()
@@ -189,9 +202,8 @@ class Chat_Box(QWidget):
             return None
         return Chat_Box(username, group_id)
 
-    def __init__(self, username='Me', group_id=None, group_name=None):
+    def __init__(self, username='Me', group_id=None, group_name=None, client=None):
         super().__init__()
-        self.__opened_groups__.add(group_id)
         self.username = username
         self.group_id = group_id
         self.group_name = group_name
@@ -199,7 +211,7 @@ class Chat_Box(QWidget):
         self.setWindowTitle('hallo')
         self.user_label = QLabel('username:%s' % self.username)
         self.room_id = QLabel('Room ID: %s' % self.group_id)
-        self.client = None
+        self.client = client
 
         # init chat content area
         bar = QWidget()
@@ -237,7 +249,7 @@ class Chat_Box(QWidget):
 
         # self.friends_vbox = QVBoxLayout()
         self.friends_list = QListWidget()
-        self.friends_list.addItems(['mzy@gmail.com', 'sb@gmail.com', 'wdy@fudan.edu.cn'])
+        # self.friends_list.addItems(['mzy@gmail.com', 'sb@gmail.com', 'wdy@fudan.edu.cn'])
 
         self.all_layout_box = QHBoxLayout()
         self.all_layout_box.addLayout(self.vbox, 3)
@@ -246,6 +258,8 @@ class Chat_Box(QWidget):
         self.setLayout(self.all_layout_box)
 
         self.show()
+
+        self.refresh_member_list()
 
         # self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # try_count = 5
@@ -260,25 +274,30 @@ class Chat_Box(QWidget):
         #         print('Connect failed')
         # if not success:
         #     self.sock = None
+    #
+    # def connect_handler(self):
+    #     try:
+    #         while True:
+    #             data = self.sock.recv(65536)
+    #             data = json.loads(data)
+    #             eventlet.sleep(0)
+    #             if data['type'] == pub_config.SERVER_SEND_MSG:
+    #                 self.show_msg(user=data['sender'], content=data['content'])
+    #             elif data['type'] == pub_config.RETURN_GROUP_MEMBERS:
+    #                 self.refresh_member_list(data['members'])
+    #     except Exception as e:
+    #         self.sock.close()
 
-
-    def connect_handler(self):
-        try:
-            while True:
-                data = self.sock.recv(65536)
-                data = json.loads(data)
-                eventlet.sleep(0)
-                if data['type'] == pub_config.SERVER_SEND_MSG:
-                    self.show_msg(user=data['sender'], content=data['content'])
-                elif data['type'] == pub_config.RETURN_GROUP_MEMBERS:
-                    self.refresh_member_list(data['members'])
-        except Exception as e:
-            self.sock.close()
-
-    def refresh_member_list(self, member_list):
-        self.friends_list.clear()
-        self.friends_list.addItems(member_list)
-        pass
+    def refresh_member_list(self):
+        member_list = self.client.get_group_members(self.group_id)
+        if member_list is not None:
+            print(member_list)
+            self.friends_list.clear()
+            for (user_id, user_name, user_desc) in member_list:
+                self.friends_list.addItem(user_name + '#' + str(user_id))
+        # self.friends_list.clear()
+        # self.friends_list.addItems(member_list)
+        QTimer.singleShot(1000, self.refresh_member_list)
 
     def show_msg(self, user, content):
         self.text_box.append('%s  %s:\n%s' % (user, get_time_str(), content))
@@ -290,7 +309,7 @@ class Chat_Box(QWidget):
         self.input_box.setText('')
 
     def __del__(self):
-        self.__opened_groups__.remove(self.group_id)
+        self.client.close()
 
 
 if __name__ == '__main__':

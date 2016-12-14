@@ -20,6 +20,8 @@ from network.Client import Client
                             -> [(uid, uname, gid, text, timestamp, msgid), ... ]
     .request_history_time:  group_id, timestamp_a, timestamp_b -> [(), ...]
 
+    .send_file:     group_id, path, file_name ->
+
 """
 if __name__ == "__main__":
     client = Client()

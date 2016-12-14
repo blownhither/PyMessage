@@ -352,6 +352,10 @@ class Client(Thread):
         l = self._fetch_buffer(pc.RETURN_HISTORY)
         return l
 
+    def send_file(self, group_id, path, file_name):
+        p = Pmd()
+        p.send_file(self.server, group_id, self.user_id, file_name, serialize_file(path), -1)
+
 if __name__ == "__main__":
     # r = random.randint(0, 1000)
     client = Client()
@@ -382,9 +386,9 @@ if __name__ == "__main__":
     # form_file("b.png", l)
     # if client.quit_group(group_id):
     #     print("Quited group")
-
-    p = Pmd()
-    p.send_file(client.server, group_id, client.user_id, "a.png", serialize_file("network/a.png"), 123)
+    client.send_file(group_id, "network/a.png", "a.png")
+    # p = Pmd()
+    # p.send_file(client.server, group_id, client.user_id, "a.png", serialize_file("network/a.png"), 123)
     # p.send_seg_file(client.server,group_id, client.user_id,-1,"a.png",serialize_file("network/a.png"))
     while True:
         pass
